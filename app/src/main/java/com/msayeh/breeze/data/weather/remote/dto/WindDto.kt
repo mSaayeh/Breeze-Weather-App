@@ -1,4 +1,4 @@
-package com.msayeh.breeze.data.weather.dto
+package com.msayeh.breeze.data.weather.remote.dto
 
 data class WindDto(
     val speed: Double,

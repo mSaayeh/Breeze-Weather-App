@@ -1,4 +1,4 @@
-package com.msayeh.breeze.data.network
+package com.msayeh.breeze.data.interceptor
 
 import com.msayeh.breeze.BuildConfig
 import okhttp3.Interceptor

@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.msayeh.breeze.data.network.NetworkManager
 import kotlinx.coroutines.launch
 
 @Composable

@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.ksp)
     kotlin("plugin.serialization") version "1.9.23"
+    alias(libs.plugins.dagger.hilt)
 }
 
 val localProperties = Properties().apply {
@@ -73,25 +74,30 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
 
+// Networking
 dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 }
 
+// Local Database
 dependencies {
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
 }
 
+// Coroutines
 dependencies {
     implementation(libs.kotlinx.coroutines.android)
 }
 
+// Coil
 dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
 }
 
+// Navigation
 dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
@@ -101,4 +107,10 @@ dependencies {
 dependencies {
     implementation(libs.bottombar)
     implementation(libs.androidx.compose.material.icons.extended)
+}
+
+// Dependency Injection
+dependencies {
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
 }

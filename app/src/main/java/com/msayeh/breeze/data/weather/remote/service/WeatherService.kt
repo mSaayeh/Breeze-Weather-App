@@ -1,6 +1,6 @@
-package com.msayeh.breeze.data.weather.service
+package com.msayeh.breeze.data.weather.remote.service
 
-import com.msayeh.breeze.data.weather.dto.WeatherResponseDto
+import com.msayeh.breeze.data.weather.remote.dto.WeatherResponseDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 

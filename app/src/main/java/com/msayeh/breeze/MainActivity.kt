@@ -21,7 +21,9 @@ import com.msayeh.breeze.presentation.common.MainBottomBar
 import com.msayeh.breeze.presentation.home.HomeScreen
 import com.msayeh.breeze.presentation.settings.SettingsScreen
 import com.msayeh.breeze.presentation.theme.BreezeTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
