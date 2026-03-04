@@ -1,8 +1,14 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.ksp)
     kotlin("plugin.serialization") version "1.9.23"
+}
+
+val localProperties = Properties().apply {
+    load(rootProject.file("local.properties").inputStream())
 }
 
 android {
@@ -36,8 +42,16 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    defaultConfig {
+        buildConfigField(
+            "String",
+            "API_KEY",
+            "\"${localProperties["API_KEY"]}\""
+        )
+    }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

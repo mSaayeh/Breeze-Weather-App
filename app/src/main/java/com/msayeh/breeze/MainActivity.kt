@@ -6,21 +6,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.compose.LifecycleStartEffect
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navigation
 import com.msayeh.breeze.presentation.Route
 import com.msayeh.breeze.presentation.alerts.AlertsScreen
 import com.msayeh.breeze.presentation.common.MainBottomBar
@@ -51,7 +45,7 @@ fun App() {
             bottomBar = {
                 MainBottomBar(navController)
             },
-        ) { innerPadding ->
+        ) {
             NavHost(
                 modifier = Modifier
                     .fillMaxSize(),
