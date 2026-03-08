@@ -9,9 +9,12 @@ class PreferencesInterceptor: Interceptor {
         val newRequest = request.newBuilder()
         // TODO: Get chosen units and lang from Data Store
         val units = "metric"
-        val lang = "ar"
-        newRequest.url(request.url.newBuilder().addQueryParameter("units", units).build())
-        newRequest.url(request.url.newBuilder().addQueryParameter("lang", lang).build())
+        val lang = "en"
+        val newUrl = request.url.newBuilder()
+            .addQueryParameter("lang", lang)
+            .addQueryParameter("units", units)
+            .build()
+        newRequest.url(newUrl)
         return chain.proceed(newRequest.build())
 
     }

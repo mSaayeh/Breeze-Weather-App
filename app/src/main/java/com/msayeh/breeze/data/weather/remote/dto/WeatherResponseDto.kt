@@ -6,8 +6,10 @@ data class WeatherResponseDto(
     val weather: List<WeatherDto>,
     val main: MainWeatherDataDto,
     val wind: WindDto,
+    val sys: WeatherSettingDto,
     @SerializedName("dt")
     val datetime: Long,
     val timezone: Int,
+    val id: Int,
     val name: String,
 )

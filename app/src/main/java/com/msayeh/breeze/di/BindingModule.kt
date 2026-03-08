@@ -1,5 +1,7 @@
 package com.msayeh.breeze.di
 
+import com.msayeh.breeze.data.weather.remote.datasource.WeatherRemoteDataSource
+import com.msayeh.breeze.data.weather.remote.datasource.WeatherRemoteDataSourceImpl
 import com.msayeh.breeze.data.weather.repository.WeatherRepositoryImpl
 import com.msayeh.breeze.domain.repository.WeatherRepository
 import dagger.Binds
@@ -10,9 +12,13 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class RepositoryModule {
+abstract class BindingModule {
 
     @Binds
     @Singleton
     abstract fun bindWeatherRepository(weatherRepository: WeatherRepositoryImpl): WeatherRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindWeatherRemoteDataSource(weatherRemoteDataSource: WeatherRemoteDataSourceImpl): WeatherRemoteDataSource
 }
