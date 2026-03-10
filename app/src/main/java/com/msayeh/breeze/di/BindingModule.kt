@@ -1,5 +1,7 @@
 package com.msayeh.breeze.di
 
+import com.msayeh.breeze.data.weather.local.datasource.WeatherLocalDataSource
+import com.msayeh.breeze.data.weather.local.datasource.WeatherLocalDataSourceImpl
 import com.msayeh.breeze.data.weather.remote.datasource.WeatherRemoteDataSource
 import com.msayeh.breeze.data.weather.remote.datasource.WeatherRemoteDataSourceImpl
 import com.msayeh.breeze.data.weather.repository.WeatherRepositoryImpl
@@ -21,4 +23,8 @@ abstract class BindingModule {
     @Binds
     @Singleton
     abstract fun bindWeatherRemoteDataSource(weatherRemoteDataSource: WeatherRemoteDataSourceImpl): WeatherRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindWeatherLocalDataSource(weatherLocalDataSource: WeatherLocalDataSourceImpl): WeatherLocalDataSource
 }

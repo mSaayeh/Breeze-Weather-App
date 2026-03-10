@@ -37,7 +37,7 @@ import kotlin.reflect.KClass
 private enum class NavBarItem(
     val route: Route,
     val routeClass: KClass<out Route>,
-    @StringRes val label: Int,
+    @param:StringRes val label: Int,
     val icon: ImageVector
 ) {
     Alerts(Route.Alerts, Route.Alerts::class, R.string.alerts, Icons.Default.Alarm),

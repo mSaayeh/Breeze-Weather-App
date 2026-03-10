@@ -12,6 +12,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.msayeh.breeze.LocalSnackbarHost
+import com.msayeh.breeze.presentation.common.UiEvent
+import com.msayeh.breeze.presentation.home.viewmodel.HomeState
 import com.msayeh.breeze.presentation.home.viewmodel.HomeViewModel
 import kotlinx.coroutines.flow.collectLatest
 
@@ -23,8 +25,8 @@ fun HomeScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel = hiltVie
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collectLatest { event ->
             when(event) {
-                is HomeUiEvent.NavigateTo -> navController.navigate(event.route)
-                is HomeUiEvent.ShowSnackbar -> snackbarHost.showSnackbar(event.message)
+                is UiEvent.NavigateTo -> navController.navigate(event.route)
+                is UiEvent.ShowSnackbar -> snackbarHost.showSnackbar(event.message)
             }
         }
     }
@@ -42,7 +44,6 @@ fun HomeContent(uiState: HomeState, onRefresh: () -> Unit, modifier: Modifier = 
         if (uiState.isLoading) {
             CircularProgressIndicator()
         } else if (uiState.currentWeather != null) {
-            Text(uiState.currentWeather.cityName)
             Text(uiState.currentWeather.temperature.toString())
             Text("Feels Like: ${uiState.currentWeather.feelsLike}")
         }

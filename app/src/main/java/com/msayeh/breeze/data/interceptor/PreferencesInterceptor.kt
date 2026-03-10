@@ -7,12 +7,11 @@ class PreferencesInterceptor: Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val newRequest = request.newBuilder()
-        // TODO: Get chosen units and lang from Data Store
-        val units = "metric"
+        // TODO: Get chosen lang from Data Store
         val lang = "en"
         val newUrl = request.url.newBuilder()
             .addQueryParameter("lang", lang)
-            .addQueryParameter("units", units)
+            .addQueryParameter("units", "metric")
             .build()
         newRequest.url(newUrl)
         return chain.proceed(newRequest.build())

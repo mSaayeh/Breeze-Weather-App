@@ -1,4 +1,4 @@
-package com.msayeh.breeze.presentation.home.ui
+package com.msayeh.breeze.presentation.home.viewmodel
 
 import com.msayeh.breeze.domain.model.Weather
 

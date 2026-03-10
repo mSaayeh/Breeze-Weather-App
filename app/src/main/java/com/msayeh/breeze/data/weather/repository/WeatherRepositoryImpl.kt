@@ -1,21 +1,128 @@
 package com.msayeh.breeze.data.weather.repository
 
+import com.msayeh.breeze.R
+import com.msayeh.breeze.data.utils.CacheUtils
+import com.msayeh.breeze.data.weather.local.datasource.WeatherLocalDataSource
+import com.msayeh.breeze.data.weather.local.entities.CityEntity
 import com.msayeh.breeze.data.weather.mappers.toDomainModel
+import com.msayeh.breeze.data.weather.mappers.toEntity
+import com.msayeh.breeze.data.weather.mappers.toSlotEntities
 import com.msayeh.breeze.data.weather.remote.datasource.WeatherRemoteDataSource
-import com.msayeh.breeze.domain.exception.LocalizedException
+import com.msayeh.breeze.domain.exception.CityNotFoundException
+import com.msayeh.breeze.domain.model.City
+import com.msayeh.breeze.domain.model.CityWeatherDetails
+import com.msayeh.breeze.domain.model.Coordinates
 import com.msayeh.breeze.domain.model.Resource
-import com.msayeh.breeze.domain.model.Weather
+import com.msayeh.breeze.domain.model.tryResourceSuspend
 import com.msayeh.breeze.domain.repository.WeatherRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class WeatherRepositoryImpl @Inject constructor(
-    private val remoteDataSource: WeatherRemoteDataSource
-): WeatherRepository {
-    override suspend fun getCurrentWeather(lat: Double, lon: Double): Resource<Weather> {
-        return try {
-            Resource.Success(remoteDataSource.getCurrentWeather(lat, lon).toDomainModel())
-        } catch (e: LocalizedException) {
-            Resource.Error(e)
+    private val remoteDataSource: WeatherRemoteDataSource,
+    private val localDataSource: WeatherLocalDataSource,
+) : WeatherRepository {
+    override fun observeAllCities(): Flow<List<City>> =
+        localDataSource.observeAllCities().map { cities -> cities.map { it.toDomainModel() } }
+
+
+    override fun observeCityWithWeather(cityId: Int): Flow<CityWeatherDetails?> =
+        localDataSource.observeCityWithWeather(cityId).map { it?.toDomainModel() }
+
+
+    override fun observeAllCitiesWithWeather(): Flow<List<CityWeatherDetails>> =
+        localDataSource.observeAllCitiesWithWeather()
+            .map { cities -> cities.map { it.toDomainModel() } }
+
+    override suspend fun getCitySuggestions(query: String): Resource<List<City>> =
+        tryResourceSuspend {
+            remoteDataSource.getGeoCitiesByName(query)
+                .map { it.toDomainModel(isCurrentLocation = false) }
         }
+
+    override suspend fun getCityByCoordinates(
+        coordinates: Coordinates,
+        isCurrentLocation: Boolean
+    ): Resource<City?> = tryResourceSuspend {
+        remoteDataSource.getGeoCityByCoordinates(
+            coordinates.latitude,
+            coordinates.longitude
+        ).toDomainModel(isCurrentLocation)
     }
+
+    override suspend fun addCityToFavorites(city: City): Resource<Unit> =
+        tryResourceSuspend {
+            val cityCurrentWeather = remoteDataSource.getCurrentWeather(
+                lat = city.coordinates.latitude,
+                lon = city.coordinates.longitude
+            )
+            localDataSource.upsertCity(
+                CityEntity(
+                    id = cityCurrentWeather.cityId,
+                    name = cityCurrentWeather.cityName,
+                    country = cityCurrentWeather.sys.country,
+                    latitude = city.coordinates.latitude,
+                    longitude = city.coordinates.longitude,
+                    isCurrentLocation = city.isCurrentLocation,
+                    sortOrder = city.sortOrder
+                )
+            )
+        }
+
+    override suspend fun removeCityFromFavorites(cityId: Int): Resource<Unit> =
+        tryResourceSuspend(R.string.error_removing_city_error) {
+            localDataSource.deleteCity(cityId)
+        }
+
+    override suspend fun refreshWeather(cityId: Int): Resource<Unit> =
+        tryResourceSuspend {
+            val city = localDataSource.getCityById(cityId) ?: throw CityNotFoundException()
+            refreshCurrentWeather(city)
+            refreshForecast(city)
+        }
+
+    suspend fun refreshWeather(cityEntity: CityEntity) {
+        refreshCurrentWeather(cityEntity)
+        refreshForecast(cityEntity)
+    }
+
+    private suspend fun refreshCurrentWeather(cityEntity: CityEntity) {
+        val currentWeather = remoteDataSource.getCurrentWeather(cityEntity.latitude, cityEntity.longitude)
+        localDataSource.upsertCurrentWeather(currentWeather.toEntity())
+    }
+
+    private suspend fun refreshForecast(cityEntity: CityEntity) {
+        val forecast = remoteDataSource.getForecast(cityEntity.latitude, cityEntity.longitude)
+        localDataSource.replaceForecast(cityEntity.id, forecast.toSlotEntities())
+    }
+
+    override suspend fun refreshIfStale(cityId: Int): Resource<Unit> =
+        tryResourceSuspend {
+            val city = localDataSource.getCityById(cityId) ?: throw CityNotFoundException()
+            val cachedCurrentWeather = localDataSource.getCurrentWeather(cityId)
+            if (CacheUtils.isStale(cachedCurrentWeather.fetchedAt, CacheUtils.CURRENT_WEATHER_TTL)) {
+                refreshCurrentWeather(cityEntity = city)
+            }
+            val forecast = localDataSource.getLastForecastSlot(cityId)
+            if (CacheUtils.isStale(forecast.fetchedAt, CacheUtils.FORECAST_TTL)) {
+                refreshForecast(cityEntity = city)
+            }
+        }
+
+    override suspend fun refreshAllCache(): Resource<Unit> =
+        tryResourceSuspend {
+            val cities = localDataSource.getAllCities()
+            cities.forEach { city ->
+                refreshWeather(city)
+            }
+        }
+
+    override suspend fun refreshAllIfStale(): Resource<Unit> =
+        tryResourceSuspend {
+            val cities = localDataSource.getAllCities()
+            cities.forEach { city ->
+                refreshIfStale(city.id)
+            }
+        }
 }

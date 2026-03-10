@@ -10,6 +10,9 @@ data class WeatherResponseDto(
     @SerializedName("dt")
     val datetime: Long,
     val timezone: Int,
-    val id: Int,
-    val name: String,
+    @SerializedName("id")
+    val cityId: Int,
+    @SerializedName("name")
+    val cityName: String,
+    val fetchedAt: Long = System.currentTimeMillis(),
 )
