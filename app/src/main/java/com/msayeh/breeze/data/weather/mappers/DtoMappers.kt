@@ -9,7 +9,7 @@ import com.msayeh.breeze.data.weather.remote.dto.WeatherResponseDto
 import com.msayeh.breeze.domain.model.City
 import com.msayeh.breeze.domain.model.Coordinates
 
-fun WeatherResponseDto.toEntity(): CurrentWeatherEntity = CurrentWeatherEntity(
+fun WeatherResponseDto.toEntity(cityId: Int): CurrentWeatherEntity = CurrentWeatherEntity(
     cityId = cityId,
     weatherName = weather[0].main,
     tempCelsius = main.temp,
@@ -43,8 +43,8 @@ fun ForecastSlotDto.toEntity(cityId: Int) = ForecastSlotEntity(
     fetchedAt = fetchedAt,
 )
 
-fun ForecastResponseDto.toSlotEntities(): List<ForecastSlotEntity> =
-    forecastsList.map { it.toEntity(city.id) }
+fun ForecastResponseDto.toSlotEntities(cityId: Int): List<ForecastSlotEntity> =
+    forecastsList.map { it.toEntity(cityId) }
 
 fun GeoCityDto.toDomainModel(isCurrentLocation: Boolean): City = City(
     id = -1,

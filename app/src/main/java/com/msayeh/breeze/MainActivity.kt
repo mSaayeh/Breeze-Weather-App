@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -22,6 +23,8 @@ import androidx.navigation.compose.rememberNavController
 import com.msayeh.breeze.presentation.Route
 import com.msayeh.breeze.presentation.alerts.AlertsScreen
 import com.msayeh.breeze.presentation.common.MainBottomBar
+import com.msayeh.breeze.presentation.common.dialog.BreezeDialogContainer
+import com.msayeh.breeze.presentation.common.dialog.BreezeDialogState
 import com.msayeh.breeze.presentation.home.ui.HomeScreen
 import com.msayeh.breeze.presentation.settings.SettingsScreen
 import com.msayeh.breeze.presentation.theme.BreezeTheme
@@ -40,34 +43,41 @@ class MainActivity : ComponentActivity() {
 }
 
 val LocalSnackbarHost = staticCompositionLocalOf { SnackbarHostState() }
+val LocalDialogState = compositionLocalOf { BreezeDialogState() }
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun App() {
     BreezeTheme {
         val navController = rememberNavController()
 
-        CompositionLocalProvider(LocalSnackbarHost provides SnackbarHostState()) {
-            Scaffold(
-                modifier = Modifier.fillMaxSize(),
-                snackbarHost = { SnackbarHost(LocalSnackbarHost.current) },
-                bottomBar = {
-                    MainBottomBar(navController)
-                },
-            ) {
-                NavHost(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    navController = navController,
-                    startDestination = Route.Home,
+        CompositionLocalProvider(
+            LocalSnackbarHost provides SnackbarHostState(),
+            LocalDialogState provides BreezeDialogState()
+        ) {
+            BreezeDialogContainer(LocalDialogState.current) {
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    snackbarHost = { SnackbarHost(LocalSnackbarHost.current) },
+                    bottomBar = {
+                        MainBottomBar(navController)
+                    },
                 ) {
-                    composable<Route.Home> {
-                        HomeScreen()
-                    }
-                    composable<Route.Settings> {
-                        SettingsScreen()
-                    }
-                    composable<Route.Alerts> {
-                        AlertsScreen()
+                    NavHost(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        navController = navController,
+                        startDestination = Route.Home,
+                    ) {
+                        composable<Route.Home> {
+                            HomeScreen()
+                        }
+                        composable<Route.Settings> {
+                            SettingsScreen()
+                        }
+                        composable<Route.Alerts> {
+                            AlertsScreen()
+                        }
                     }
                 }
             }

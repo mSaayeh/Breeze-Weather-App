@@ -27,7 +27,7 @@ fun CityEntity.toDomainModel() = City(
     name = name,
     country = country,
     coordinates = Coordinates(latitude, longitude),
-    isCurrentLocation = isCurrentLocation,
+    isCurrentLocation = id == -1,
     sortOrder = sortOrder,
 )
 

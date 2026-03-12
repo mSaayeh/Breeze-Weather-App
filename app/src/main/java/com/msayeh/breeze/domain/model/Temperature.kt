@@ -8,11 +8,11 @@ data class Temperature(
     val kelvin: Double
         get() = celsius + 273.15
 
-    enum class Unit(val code: String) {
-        CELSIUS("C"), FAHRENHEIT("F"), KELVIN("K");
+    enum class Unit(val code: Int) {
+        CELSIUS(1001), FAHRENHEIT(1002), KELVIN(1003);
 
         companion object {
-            fun fromCode(code: String): Unit = entries.first { it.code == code }
+            fun fromCode(code: Int): Unit = entries.first { it.code == code }
         }
     }
 

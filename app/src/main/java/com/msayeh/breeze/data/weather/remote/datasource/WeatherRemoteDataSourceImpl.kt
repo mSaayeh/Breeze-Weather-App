@@ -26,7 +26,7 @@ class WeatherRemoteDataSourceImpl @Inject constructor(
         lat: Double,
         lon: Double
     ): GeoCityDto = tryRequest {
-        geoService.reverseGeocoding(lat, lon)
+        geoService.reverseGeocoding(lat, lon).first()
     }
 
     override suspend fun getGeoCitiesByName(cityName: String): List<GeoCityDto> = tryRequest {

@@ -9,10 +9,10 @@ data class Wind(
     val speedMph: Double
         get() = speedMs * 2.237
 
-    enum class Unit(val code: String) {
-        METRIC_MS("ms"), METRIC_KMH("kmh"), IMPERIAL("mph");
+    enum class Unit(val code: Int) {
+        METRIC_MS(2001), METRIC_KMH(2002), IMPERIAL(2003);
         companion object {
-            fun fromCode(code: String): Unit = entries.first { it.code == code }
+            fun fromCode(code: Int): Unit = entries.first { it.code == code }
         }
     }
 

@@ -1,18 +1,29 @@
 package com.msayeh.breeze.presentation.home.ui
 
+import android.Manifest
+import android.util.Log
+import androidx.activity.compose.LocalActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
+import com.msayeh.breeze.LocalDialogState
 import com.msayeh.breeze.LocalSnackbarHost
+import com.msayeh.breeze.presentation.common.LocationUtils
 import com.msayeh.breeze.presentation.common.UiEvent
+import com.msayeh.breeze.presentation.common.UiEventsHandler
 import com.msayeh.breeze.presentation.home.viewmodel.HomeState
 import com.msayeh.breeze.presentation.home.viewmodel.HomeViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -20,32 +31,50 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val snackbarHost = LocalSnackbarHost.current
-    val navController = rememberNavController()
-    LaunchedEffect(Unit) {
-        viewModel.uiEvent.collectLatest { event ->
-            when(event) {
-                is UiEvent.NavigateTo -> navController.navigate(event.route)
-                is UiEvent.ShowSnackbar -> snackbarHost.showSnackbar(event.message)
-            }
+
+    val app = LocalActivity.current!!.application
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val granted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+
+        viewModel.onLocationPermissionResult(granted)
+    }
+
+    UiEventsHandler(viewModel.uiEvent)
+
+    LaunchedEffect(uiState.isCitySelected) {
+        if (uiState.isCitySelected.not() && LocationUtils.checkLocationPermission(app).not()) {
+            permissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
         }
     }
+
     HomeContent(
         uiState,
-        viewModel::updateCurrentWeather,
+        viewModel::refreshWeather,
         modifier = modifier.fillMaxSize(),
     )
 }
 
 @Composable
 fun HomeContent(uiState: HomeState, onRefresh: () -> Unit, modifier: Modifier = Modifier) {
-    Column {
+    Column(modifier = modifier) {
         Text("Home Screen")
         if (uiState.isLoading) {
             CircularProgressIndicator()
-        } else if (uiState.currentWeather != null) {
-            Text(uiState.currentWeather.temperature.toString())
-            Text("Feels Like: ${uiState.currentWeather.feelsLike}")
+        } else if (uiState.cityWeatherDetails != null) {
+            Text(uiState.cityWeatherDetails.currentWeather?.temperature.toString())
+            Text("Feels Like: ${uiState.cityWeatherDetails.currentWeather?.feelsLike}")
+        }
+        Button(onRefresh) {
+            Text("Refresh")
         }
     }
 }

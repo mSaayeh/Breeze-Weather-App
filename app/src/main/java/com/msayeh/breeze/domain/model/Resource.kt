@@ -9,6 +9,16 @@ sealed class Resource<out T> {
     data class Success<out T>(val data: T) : Resource<T>()
     data class Error<out T>(val exception: LocalizedException, val cachedData: T? = null) :
         Resource<T>()
+
+    fun fold(
+        onSuccess: (T) -> Unit,
+        onError: (LocalizedException) -> Unit,
+    ) {
+        when(this) {
+            is Success -> onSuccess(data)
+            is Error -> onError(exception)
+        }
+    }
 }
 
 fun <T> tryResource(@StringRes customErrorMessage: Int? = null, block: () -> T): Resource<T> {

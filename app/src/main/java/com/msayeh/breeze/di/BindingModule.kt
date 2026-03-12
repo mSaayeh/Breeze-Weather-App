@@ -1,10 +1,14 @@
 package com.msayeh.breeze.di
 
+import com.msayeh.breeze.data.preferences.datasource.PreferencesDataSource
+import com.msayeh.breeze.data.preferences.datasource.PreferencesDataSourceImpl
+import com.msayeh.breeze.data.preferences.repository.PreferencesRepositoryImpl
 import com.msayeh.breeze.data.weather.local.datasource.WeatherLocalDataSource
 import com.msayeh.breeze.data.weather.local.datasource.WeatherLocalDataSourceImpl
 import com.msayeh.breeze.data.weather.remote.datasource.WeatherRemoteDataSource
 import com.msayeh.breeze.data.weather.remote.datasource.WeatherRemoteDataSourceImpl
 import com.msayeh.breeze.data.weather.repository.WeatherRepositoryImpl
+import com.msayeh.breeze.domain.repository.PreferencesRepository
 import com.msayeh.breeze.domain.repository.WeatherRepository
 import dagger.Binds
 import dagger.Module
@@ -27,4 +31,12 @@ abstract class BindingModule {
     @Binds
     @Singleton
     abstract fun bindWeatherLocalDataSource(weatherLocalDataSource: WeatherLocalDataSourceImpl): WeatherLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindPreferencesDataSource(preferencesDataSource: PreferencesDataSourceImpl): PreferencesDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindPreferencesRepository(preferencesRepository: PreferencesRepositoryImpl): PreferencesRepository
 }

@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CityDao {
-    @Query("SELECT * FROM cities ORDER BY sortOrder ASC")
+    @Query("SELECT * FROM cities ORDER BY sortOrder ASC, addedAt DESC")
     fun observeAllCities(): Flow<List<CityEntity>>
 
-    @Query("SELECT * FROM cities ORDER BY sortOrder ASC")
+    @Query("SELECT * FROM cities ORDER BY sortOrder ASC, addedAt DESC")
     suspend fun getAllCities(): List<CityEntity>
 
     @Query("SELECT * FROM cities WHERE id = :cityId")
@@ -22,7 +22,7 @@ interface CityDao {
     suspend fun getCityById(cityId: Int): CityEntity?
 
     @Upsert
-    suspend fun upsertCity(city: CityEntity)
+    suspend fun upsertCity(city: CityEntity): Long
 
     @Upsert
     suspend fun upsertAllCities(cities: List<CityEntity>)

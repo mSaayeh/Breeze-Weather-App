@@ -96,6 +96,7 @@ dependencies {
 dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
 }
 
 // Local Database
@@ -125,6 +126,7 @@ dependencies {
 dependencies {
     implementation(libs.bottombar)
     implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.lottie)
 }
 
 // Dependency Injection
@@ -137,4 +139,15 @@ dependencies {
 // Backward Compatibility
 dependencies {
     coreLibraryDesugaring(libs.desugaring)
+}
+
+// Play Services Location
+dependencies {
+    implementation(libs.play.services.location)
+    implementation(libs.kotlinx.coroutines.play.services)
+}
+
+// Data Store
+dependencies {
+    implementation(libs.androidx.datastore.preferences)
 }

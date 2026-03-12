@@ -10,7 +10,7 @@ interface WeatherLocalDataSource {
     fun observeAllCities(): Flow<List<CityEntity>>
     suspend fun getAllCities(): List<CityEntity>
     suspend fun getCityById(cityId: Int): CityEntity?
-    suspend fun upsertCity(city: CityEntity)
+    suspend fun upsertCity(city: CityEntity): CityEntity
     suspend fun deleteCity(cityId: Int)
     suspend fun upsertAllCities(cities: List<CityEntity>)
     suspend fun clearCities()

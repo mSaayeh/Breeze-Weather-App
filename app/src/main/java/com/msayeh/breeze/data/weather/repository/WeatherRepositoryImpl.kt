@@ -51,23 +51,27 @@ class WeatherRepositoryImpl @Inject constructor(
         ).toDomainModel(isCurrentLocation)
     }
 
-    override suspend fun addCityToFavorites(city: City): Resource<Unit> =
+    override suspend fun addCityToFavorites(city: City): Resource<City> =
         tryResourceSuspend {
-            val cityCurrentWeather = remoteDataSource.getCurrentWeather(
-                lat = city.coordinates.latitude,
-                lon = city.coordinates.longitude
-            )
             localDataSource.upsertCity(
-                CityEntity(
-                    id = cityCurrentWeather.cityId,
-                    name = cityCurrentWeather.cityName,
-                    country = cityCurrentWeather.sys.country,
-                    latitude = city.coordinates.latitude,
-                    longitude = city.coordinates.longitude,
-                    isCurrentLocation = city.isCurrentLocation,
-                    sortOrder = city.sortOrder
-                )
-            )
+                if (city.isCurrentLocation)
+                    CityEntity(
+                        id = -1,
+                        name = city.name,
+                        country = city.country,
+                        latitude = city.coordinates.latitude,
+                        longitude = city.coordinates.longitude,
+                        sortOrder = city.sortOrder
+                    )
+                else
+                    CityEntity(
+                        name = city.name,
+                        country = city.country,
+                        latitude = city.coordinates.latitude,
+                        longitude = city.coordinates.longitude,
+                        sortOrder = city.sortOrder
+                    )
+            ).toDomainModel()
         }
 
     override suspend fun removeCityFromFavorites(cityId: Int): Resource<Unit> =
@@ -88,20 +92,25 @@ class WeatherRepositoryImpl @Inject constructor(
     }
 
     private suspend fun refreshCurrentWeather(cityEntity: CityEntity) {
-        val currentWeather = remoteDataSource.getCurrentWeather(cityEntity.latitude, cityEntity.longitude)
-        localDataSource.upsertCurrentWeather(currentWeather.toEntity())
+        val currentWeather =
+            remoteDataSource.getCurrentWeather(cityEntity.latitude, cityEntity.longitude)
+        localDataSource.upsertCurrentWeather(currentWeather.toEntity(cityEntity.id))
     }
 
     private suspend fun refreshForecast(cityEntity: CityEntity) {
         val forecast = remoteDataSource.getForecast(cityEntity.latitude, cityEntity.longitude)
-        localDataSource.replaceForecast(cityEntity.id, forecast.toSlotEntities())
+        localDataSource.replaceForecast(cityEntity.id, forecast.toSlotEntities(cityEntity.id))
     }
 
     override suspend fun refreshIfStale(cityId: Int): Resource<Unit> =
         tryResourceSuspend {
             val city = localDataSource.getCityById(cityId) ?: throw CityNotFoundException()
             val cachedCurrentWeather = localDataSource.getCurrentWeather(cityId)
-            if (CacheUtils.isStale(cachedCurrentWeather.fetchedAt, CacheUtils.CURRENT_WEATHER_TTL)) {
+            if (CacheUtils.isStale(
+                    cachedCurrentWeather.fetchedAt,
+                    CacheUtils.CURRENT_WEATHER_TTL
+                )
+            ) {
                 refreshCurrentWeather(cityEntity = city)
             }
             val forecast = localDataSource.getLastForecastSlot(cityId)

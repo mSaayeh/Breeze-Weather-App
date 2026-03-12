@@ -8,4 +8,12 @@
     <string name="city_not_found_error">The city you are trying to get has been removed.</string>
     <string name="unknown_error">An Unknown error has occurred. Please try again later.</string>
     <string name="error_removing_city_error">An error occurred while trying to remove the city.</string>
+    <string name="weather_refreshed_successfully">Weather refreshed successfully</string>
+    <string name="location_permission_denied">Location permission denied</string>
+    <string name="enable_location_or_choose_city">Please grant location permission or add a location manually to use the app.</string>
+    <string name="enable_location">Enable Location</string>
+    <string name="error_getting_current_location">Error getting current location</string>
+    <string name="select_city_manually">An error occurred while trying to get the weather for your current location.\nPlease choose a city manually.</string>
+    <string name="choose_manually_instead">Choose manually instead</string>
+    <string name="enable_location_permission">Enable location permission</string>
 </resources>

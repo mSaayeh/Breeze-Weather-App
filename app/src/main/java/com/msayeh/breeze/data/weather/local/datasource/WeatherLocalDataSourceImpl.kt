@@ -24,7 +24,8 @@ class WeatherLocalDataSourceImpl @Inject constructor(
 
     override suspend fun getCityById(cityId: Int): CityEntity? = cityDao.getCityById(cityId)
 
-    override suspend fun upsertCity(city: CityEntity) = cityDao.upsertCity(city)
+    override suspend fun upsertCity(city: CityEntity) =
+        cityDao.upsertCity(city).let { cityDao.getCityById(it.toInt()) ?: throw CityNotFoundException() }
 
     override suspend fun deleteCity(cityId: Int) = cityDao.deleteCityById(cityId)
 
