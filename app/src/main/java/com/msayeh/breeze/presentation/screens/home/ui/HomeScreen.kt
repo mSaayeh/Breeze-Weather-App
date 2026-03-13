@@ -1,8 +1,6 @@
-package com.msayeh.breeze.presentation.home.ui
+package com.msayeh.breeze.presentation.screens.home.ui
 
 import android.Manifest
-import android.util.Log
-import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
@@ -13,21 +11,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.window.Dialog
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.rememberNavController
-import com.msayeh.breeze.LocalDialogState
-import com.msayeh.breeze.LocalSnackbarHost
-import com.msayeh.breeze.presentation.common.LocationUtils
-import com.msayeh.breeze.presentation.common.UiEvent
-import com.msayeh.breeze.presentation.common.UiEventsHandler
-import com.msayeh.breeze.presentation.home.viewmodel.HomeState
-import com.msayeh.breeze.presentation.home.viewmodel.HomeViewModel
-import kotlinx.coroutines.flow.collectLatest
+import com.msayeh.breeze.presentation.utils.LocationUtils
+import com.msayeh.breeze.presentation.utils.UiEventsHandler
+import com.msayeh.breeze.presentation.screens.home.viewmodel.HomeState
+import com.msayeh.breeze.presentation.screens.home.viewmodel.HomeViewModel
 
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel = hiltViewModel()) {

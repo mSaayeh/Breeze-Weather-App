@@ -1,4 +1,4 @@
-package com.msayeh.breeze.presentation.common
+package com.msayeh.breeze.presentation.utils
 
 import android.content.Intent
 import android.net.Uri
@@ -6,12 +6,11 @@ import android.provider.Settings
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
-import com.msayeh.breeze.LocalDialogState
-import com.msayeh.breeze.LocalSnackbarHost
-import com.msayeh.breeze.presentation.Route
+import com.msayeh.breeze.presentation.activity.LocalDialogState
+import com.msayeh.breeze.presentation.activity.LocalSnackbarHost
+import com.msayeh.breeze.presentation.navigation.Route
 import com.msayeh.breeze.presentation.common.dialog.BreezeDialogData
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest

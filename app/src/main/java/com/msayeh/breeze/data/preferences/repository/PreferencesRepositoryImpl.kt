@@ -1,6 +1,7 @@
 package com.msayeh.breeze.data.preferences.repository
 
 import com.msayeh.breeze.data.preferences.datasource.PreferencesDataSource
+import com.msayeh.breeze.data.utils.AppLanguage
 import com.msayeh.breeze.domain.model.Temperature
 import com.msayeh.breeze.domain.model.Wind
 import com.msayeh.breeze.domain.repository.PreferencesRepository
@@ -28,9 +29,13 @@ class PreferencesRepositoryImpl @Inject constructor(
     override suspend fun saveDarkTheme(isDarkThemeEnabled: Boolean) =
         preferencesDataSource.saveIsDarkTheme(isDarkThemeEnabled)
 
-    override fun getLanguage(): Flow<Int?> = preferencesDataSource.languageFlow()
+    override fun getLanguage(): Flow<AppLanguage?> = preferencesDataSource.languageFlow().map {
+        if (it == null) return@map null
+        AppLanguage.fromCode(it)
+    }
 
-    override suspend fun saveLanguage(language: Int) = preferencesDataSource.saveLanguage(language)
+    override suspend fun saveLanguage(appLanguage: AppLanguage) =
+        preferencesDataSource.saveLanguage(appLanguage.code)
 
     override fun getTempUnit(): Flow<Temperature.Unit?> =
         preferencesDataSource.getTempUnitFlow().map {

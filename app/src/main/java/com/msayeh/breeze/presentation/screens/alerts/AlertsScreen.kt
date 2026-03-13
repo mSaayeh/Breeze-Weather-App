@@ -1,4 +1,4 @@
-package com.msayeh.breeze.presentation.settings
+package com.msayeh.breeze.presentation.screens.alerts
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,8 +8,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun SettingsScreen(modifier: Modifier = Modifier) {
+fun AlertsScreen(modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Settings Screen")
+        Text("Alerts Screen")
     }
 }

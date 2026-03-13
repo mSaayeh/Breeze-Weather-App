@@ -1,5 +1,6 @@
 package com.msayeh.breeze.domain.repository
 
+import com.msayeh.breeze.data.utils.AppLanguage
 import com.msayeh.breeze.domain.model.Temperature
 import com.msayeh.breeze.domain.model.Wind
 import kotlinx.coroutines.flow.Flow
@@ -13,8 +14,8 @@ interface PreferencesRepository {
     fun isDarkThemeEnabled(): Flow<Boolean?>
     suspend fun saveDarkTheme(isDarkThemeEnabled: Boolean)
 
-    fun getLanguage(): Flow<Int?>
-    suspend fun saveLanguage(language: Int)
+    fun getLanguage(): Flow<AppLanguage?>
+    suspend fun saveLanguage(appLanguage: AppLanguage)
 
     fun getTempUnit(): Flow<Temperature.Unit?>
     suspend fun saveTempUnit(unit: Temperature.Unit)

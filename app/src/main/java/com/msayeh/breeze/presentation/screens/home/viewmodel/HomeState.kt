@@ -1,4 +1,4 @@
-package com.msayeh.breeze.presentation.home.viewmodel
+package com.msayeh.breeze.presentation.screens.home.viewmodel
 
 import com.msayeh.breeze.domain.model.CityWeatherDetails
 

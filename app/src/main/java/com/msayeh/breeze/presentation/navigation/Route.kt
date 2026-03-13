@@ -1,4 +1,4 @@
-package com.msayeh.breeze.presentation
+package com.msayeh.breeze.presentation.navigation
 
 import kotlinx.serialization.Serializable
 

@@ -1,4 +1,4 @@
-package com.msayeh.breeze.presentation.common
+package com.msayeh.breeze.presentation.utils
 
 import android.Manifest
 import android.app.Application
@@ -11,12 +11,9 @@ import androidx.core.location.LocationManagerCompat
 import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import com.google.android.gms.tasks.CancellationToken
 import com.google.android.gms.tasks.CancellationTokenSource
-import com.msayeh.breeze.domain.exception.LocalizedException
 import com.msayeh.breeze.domain.model.Coordinates
 import kotlinx.coroutines.tasks.await
-import javax.inject.Inject
 
 object LocationUtils {
     fun checkLocationPermission(context: Context): Boolean =

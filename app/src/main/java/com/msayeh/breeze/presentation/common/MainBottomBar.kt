@@ -31,7 +31,7 @@ import com.example.bottombar.model.IndicatorStyle
 import com.example.bottombar.model.ItemStyle
 import com.example.bottombar.model.VisibleItem
 import com.msayeh.breeze.R
-import com.msayeh.breeze.presentation.Route
+import com.msayeh.breeze.presentation.navigation.Route
 import kotlin.reflect.KClass
 
 private enum class NavBarItem(

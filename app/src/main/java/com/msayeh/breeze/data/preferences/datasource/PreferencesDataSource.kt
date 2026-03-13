@@ -11,9 +11,9 @@ interface PreferencesDataSource {
     fun getTempUnitFlow(): Flow<Int?>
     fun getSpeedUnitFlow(): Flow<Int?>
     fun isDarkThemeFlow(): Flow<Boolean?>
-    fun languageFlow(): Flow<Int?>
+    fun languageFlow(): Flow<String?>
 
-    suspend fun saveLanguage(language: Int)
+    suspend fun saveLanguage(language: String)
 
     suspend fun saveTempUnit(unit: Int)
 

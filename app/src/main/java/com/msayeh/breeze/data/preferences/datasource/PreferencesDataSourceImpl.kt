@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +17,7 @@ import javax.inject.Inject
 
 class PreferencesDataSourceImpl @Inject constructor(private val context: Application) : PreferencesDataSource {
     private val CHOSEN_CITY_ID = intPreferencesKey("chosen_city_id")
-    private val LANGUAGE = intPreferencesKey("language")
+    private val LANGUAGE = stringPreferencesKey("language")
     private val IS_DARK_THEME = booleanPreferencesKey("is_dark_theme")
     private val FIRST_TIME_USER = booleanPreferencesKey("first_time_user")
     private val TEMP_UNIT = intPreferencesKey("temp_unit")
@@ -51,11 +52,11 @@ class PreferencesDataSourceImpl @Inject constructor(private val context: Applica
         preferences[IS_DARK_THEME]
     }
 
-    override fun languageFlow(): Flow<Int?> = context.dataStore.data.map { preferences ->
+    override fun languageFlow(): Flow<String?> = context.dataStore.data.map { preferences ->
         preferences[LANGUAGE]
     }
 
-    override suspend fun saveLanguage(language: Int) {
+    override suspend fun saveLanguage(language: String) {
         context.dataStore.edit { preferences ->
             preferences[LANGUAGE] = language
         }

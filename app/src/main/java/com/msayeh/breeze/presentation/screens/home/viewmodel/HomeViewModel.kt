@@ -1,4 +1,4 @@
-package com.msayeh.breeze.presentation.home.viewmodel
+package com.msayeh.breeze.presentation.screens.home.viewmodel
 
 import android.annotation.SuppressLint
 import android.app.Application
@@ -8,8 +8,8 @@ import com.msayeh.breeze.R
 import com.msayeh.breeze.domain.model.Resource
 import com.msayeh.breeze.domain.repository.PreferencesRepository
 import com.msayeh.breeze.domain.repository.WeatherRepository
-import com.msayeh.breeze.presentation.common.LocationUtils
-import com.msayeh.breeze.presentation.common.UiEvent
+import com.msayeh.breeze.presentation.utils.LocationUtils
+import com.msayeh.breeze.presentation.utils.UiEvent
 import com.msayeh.breeze.presentation.common.dialog.BreezeDialogData
 import com.msayeh.breeze.presentation.common.dialog.DialogButton
 import com.msayeh.breeze.presentation.common.dialog.DialogButtonType
@@ -49,8 +49,8 @@ class HomeViewModel @Inject constructor(
             selectedCityId.collectLatest { cityId ->
                 if (cityId != null) {
                     _uiState.update { it.copy(isCitySelected = true) }
-                    refreshWeather()
                     observeCityWithWeather()
+                    refreshWeather()
                 } else {
                     _uiState.update { it.copy(isCitySelected = false) }
                 }
