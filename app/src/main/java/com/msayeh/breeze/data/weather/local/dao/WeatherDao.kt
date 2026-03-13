@@ -26,7 +26,7 @@ interface WeatherDao {
     fun observeForecastSlots(cityId: Int): Flow<List<ForecastSlotEntity>>
 
     @Query("SELECT * FROM forecast_slots WHERE cityId = :cityId ORDER BY datetime ASC LIMIT 1")
-    suspend fun getLastForecastSlot(cityId: Int): ForecastSlotEntity
+    suspend fun getLastForecastSlot(cityId: Int): ForecastSlotEntity?
 
     @Query("SELECT * FROM forecast_slots WHERE cityId = :cityId AND datetime >= :fromTime ORDER BY datetime ASC")
     fun observeForecastSlotsFrom(cityId: Int, fromTime: Long): Flow<List<ForecastSlotEntity>>

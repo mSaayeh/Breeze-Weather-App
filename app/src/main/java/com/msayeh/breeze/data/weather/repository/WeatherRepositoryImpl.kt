@@ -86,7 +86,7 @@ class WeatherRepositoryImpl @Inject constructor(
             refreshForecast(city)
         }
 
-    suspend fun refreshWeather(cityEntity: CityEntity) {
+    private suspend fun refreshWeather(cityEntity: CityEntity) {
         refreshCurrentWeather(cityEntity)
         refreshForecast(cityEntity)
     }
@@ -106,7 +106,7 @@ class WeatherRepositoryImpl @Inject constructor(
         tryResourceSuspend {
             val city = localDataSource.getCityById(cityId) ?: throw CityNotFoundException()
             val cachedCurrentWeather = localDataSource.getCurrentWeather(cityId)
-            if (CacheUtils.isStale(
+            if (cachedCurrentWeather == null || CacheUtils.isStale(
                     cachedCurrentWeather.fetchedAt,
                     CacheUtils.CURRENT_WEATHER_TTL
                 )
@@ -114,7 +114,11 @@ class WeatherRepositoryImpl @Inject constructor(
                 refreshCurrentWeather(cityEntity = city)
             }
             val forecast = localDataSource.getLastForecastSlot(cityId)
-            if (CacheUtils.isStale(forecast.fetchedAt, CacheUtils.FORECAST_TTL)) {
+            if (forecast == null || CacheUtils.isStale(
+                    forecast.fetchedAt,
+                    CacheUtils.FORECAST_TTL
+                )
+            ) {
                 refreshForecast(cityEntity = city)
             }
         }

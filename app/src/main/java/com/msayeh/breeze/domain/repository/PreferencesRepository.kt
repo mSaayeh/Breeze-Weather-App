@@ -5,7 +5,7 @@ import com.msayeh.breeze.domain.model.Wind
 import kotlinx.coroutines.flow.Flow
 
 interface PreferencesRepository {
-    suspend fun isFirstTimeLaunch(): Boolean
+    suspend fun checkAndMarkFirstLaunch(): Boolean
 
     fun getChosenCityIdFlow(): Flow<Int?>
     suspend fun saveChosenCityId(cityId: Int)

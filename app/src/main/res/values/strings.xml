@@ -16,4 +16,5 @@
     <string name="select_city_manually">An error occurred while trying to get the weather for your current location.\nPlease choose a city manually.</string>
     <string name="choose_manually_instead">Choose manually instead</string>
     <string name="enable_location_permission">Enable location permission</string>
+    <string name="choose_city">Choose city</string>
 </resources>

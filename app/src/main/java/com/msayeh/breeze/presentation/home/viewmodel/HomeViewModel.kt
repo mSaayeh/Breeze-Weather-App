@@ -18,9 +18,12 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,7 +34,7 @@ class HomeViewModel @Inject constructor(
     private val prefRepository: PreferencesRepository,
     private val application: Application,
 ) : ViewModel() {
-    private var selectedCityId: MutableStateFlow<Int?> = MutableStateFlow(null)
+    private var selectedCityId: StateFlow<Int?> = prefRepository.getChosenCityIdFlow().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     private var observationJob: Job? = null
 
@@ -42,11 +45,6 @@ class HomeViewModel @Inject constructor(
     val uiEvent = _uiEvent.asSharedFlow()
 
     init {
-        viewModelScope.launch {
-            prefRepository.getChosenCityIdFlow().collectLatest { cityId ->
-                selectedCityId.update { cityId }
-            }
-        }
         viewModelScope.launch {
             selectedCityId.collectLatest { cityId ->
                 if (cityId != null) {
@@ -64,7 +62,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             if (selectedCityId.value == null) return@launch
             _uiState.update { it.copy(isLoading = true) }
-            val result = weatherRepository.refreshWeather(selectedCityId.value!!)
+            val result = weatherRepository.refreshIfStale(selectedCityId.value!!)
             _uiState.update { it.copy(isLoading = false) }
 
             when (result) {
@@ -109,12 +107,15 @@ class HomeViewModel @Inject constructor(
                     showPermissionDeniedDialog()
                     return@launch
                 }
-                val cityResource = weatherRepository.getCityByCoordinates(coordinates, isCurrentLocation = true)
+                val cityResource =
+                    weatherRepository.getCityByCoordinates(coordinates, isCurrentLocation = true)
                 if (cityResource is Resource.Success && cityResource.data != null) {
                     val addedCityResource = weatherRepository.addCityToFavorites(cityResource.data)
                     addedCityResource.fold(
                         onSuccess = { data ->
-                            selectedCityId.update { data.id }
+                            viewModelScope.launch {
+                                prefRepository.saveChosenCityId(data.id)
+                            }
                         },
                         onError = { exception ->
                             exception.printStackTrace()
@@ -172,7 +173,7 @@ class HomeViewModel @Inject constructor(
                         ),
                     ).negativeButton(
                         DialogButton(
-                            text = "Choose city",
+                            text = application.getString(R.string.choose_city),
                             onClick = {
                                 // TODO: Navigate to city selection screen
                                 hideDialog()

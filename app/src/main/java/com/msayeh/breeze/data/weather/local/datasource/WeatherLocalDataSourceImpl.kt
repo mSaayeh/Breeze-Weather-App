@@ -37,8 +37,8 @@ class WeatherLocalDataSourceImpl @Inject constructor(
         weatherDao.observeCurrentWeather(cityId).map { it ?: throw CityNotFoundException() }
 
 
-    override suspend fun getCurrentWeather(cityId: Int): CurrentWeatherEntity =
-        weatherDao.getCurrentWeather(cityId) ?: throw CityNotFoundException()
+    override suspend fun getCurrentWeather(cityId: Int): CurrentWeatherEntity? =
+        weatherDao.getCurrentWeather(cityId)
 
     override suspend fun upsertCurrentWeather(currentWeatherEntity: CurrentWeatherEntity) =
         try {
@@ -52,7 +52,7 @@ class WeatherLocalDataSourceImpl @Inject constructor(
     override fun observeForecastSlots(cityId: Int): Flow<List<ForecastSlotEntity>> =
         weatherDao.observeForecastSlots(cityId)
 
-    override suspend fun getLastForecastSlot(cityId: Int): ForecastSlotEntity =
+    override suspend fun getLastForecastSlot(cityId: Int): ForecastSlotEntity? =
         weatherDao.getLastForecastSlot(cityId)
 
     override fun observeForecastSlotsFrom(

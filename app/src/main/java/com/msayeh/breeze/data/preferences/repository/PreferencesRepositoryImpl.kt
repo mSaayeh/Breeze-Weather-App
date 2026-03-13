@@ -11,7 +11,7 @@ import javax.inject.Inject
 class PreferencesRepositoryImpl @Inject constructor(
     private val preferencesDataSource: PreferencesDataSource,
 ) : PreferencesRepository {
-    override suspend fun isFirstTimeLaunch(): Boolean =
+    override suspend fun checkAndMarkFirstLaunch(): Boolean =
         preferencesDataSource.isFirstTimeUser().also {
             if (it) {
                 preferencesDataSource.saveFirstTimeUser(false)
