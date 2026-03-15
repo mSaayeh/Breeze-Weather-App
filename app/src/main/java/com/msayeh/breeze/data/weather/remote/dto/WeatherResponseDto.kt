@@ -14,5 +14,5 @@ data class WeatherResponseDto(
     val cityId: Int,
     @SerializedName("name")
     val cityName: String,
-    val fetchedAt: Long = System.currentTimeMillis(),
+    @Transient val fetchedAt: Long = 0L,
 )

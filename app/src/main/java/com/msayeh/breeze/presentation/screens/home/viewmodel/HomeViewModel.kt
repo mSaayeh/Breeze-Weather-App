@@ -72,7 +72,7 @@ class HomeViewModel @Inject constructor(
                 if (cityId != null) {
                     _uiState.update { it.copy(isCitySelected = true) }
                     observeCityWithWeather()
-                    refreshWeather()
+                    refreshWeather(false)
                 } else {
                     _uiState.update { it.copy(isCitySelected = false) }
                 }
@@ -80,29 +80,36 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun refreshWeather() {
+    fun refreshWeather(isPrompted: Boolean = true) {
         viewModelScope.launch {
-            if (selectedCityId.value == null) return@launch
-            _uiState.update { it.copy(isLoading = true) }
-            val result = weatherRepository.refreshIfStale(selectedCityId.value!!)
-            _uiState.update { it.copy(isLoading = false) }
+            selectedCityId.value?.let { cityId ->
+                _uiState.update { it.copy(isLoading = true) }
 
-            when (result) {
-                is Resource.Error<Unit> -> _uiEvent.emit(
-                    UiEvent.ShowSnackbar(
-                        application.getString(
-                            result.exception.messageResId
+                when (val result = weatherRepository.refreshWithDebounce(cityId)) {
+                    is Resource.Error<Boolean> -> _uiEvent.emit(
+                        UiEvent.ShowSnackbar(
+                            application.getString(
+                                result.exception.messageResId
+                            )
                         )
                     )
-                )
 
-                is Resource.Success<Unit> -> _uiEvent.emit(
-                    UiEvent.ShowSnackbar(
-                        application.getString(
-                            R.string.weather_refreshed_successfully
+                    is Resource.Success<Boolean> -> if (isPrompted) {
+                        if (result.data) _uiEvent.emit(
+                            UiEvent.ShowSnackbar(
+                                application.getString(
+                                    R.string.weather_refreshed_successfully
+                                )
+                            )
+                        ) else _uiEvent.emit(
+                            UiEvent.ShowSnackbar(
+                                application.getString(R.string.please_wait_some_time_before_refreshing_again)
+                            )
                         )
-                    )
-                )
+                    }
+                }
+
+                _uiState.update { it.copy(isLoading = false) }
             }
         }
     }

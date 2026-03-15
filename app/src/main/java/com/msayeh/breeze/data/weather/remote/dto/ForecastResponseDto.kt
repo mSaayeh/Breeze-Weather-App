@@ -6,5 +6,5 @@ data class ForecastResponseDto(
     @SerializedName("list")
     val forecastsList: List<ForecastSlotDto>,
     val city: CityDto,
-    val fetchedAt: Long = System.currentTimeMillis(),
+    @Transient val fetchedAt: Long = 0L,
 )

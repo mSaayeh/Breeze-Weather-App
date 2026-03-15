@@ -38,7 +38,9 @@ fun DailyForecastSection(forecasts: List<ForecastDay>?, unitPreferences: UnitPre
             Text(
                 stringResource(R.string.daily_forecast),
                 modifier = Modifier.padding(start = 16.dp),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    color = MaterialTheme.colorScheme.onBackground
+                ),
             )
             Spacer(Modifier.height(8.dp))
             LazyRow(

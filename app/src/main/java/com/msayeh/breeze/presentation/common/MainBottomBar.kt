@@ -3,7 +3,9 @@ package com.msayeh.breeze.presentation.common
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.CircleShape
@@ -114,4 +116,13 @@ private fun BottomBarContent(controller: NavHostController, modifier: Modifier =
             )
         }
     }
+}
+
+@Composable
+fun BottomBarSpacing() {
+    Spacer(
+        Modifier
+            .height(128.dp)
+            .systemBarsPadding()
+    )
 }

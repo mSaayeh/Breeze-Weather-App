@@ -8,5 +8,5 @@ data class ForecastSlotDto(
     val main: MainWeatherDataDto,
     val weather: List<WeatherDto>,
     val wind: WindDto,
-    val fetchedAt: Long = System.currentTimeMillis(),
+    @Transient val fetchedAt: Long = 0L,
 )

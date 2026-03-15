@@ -15,11 +15,11 @@ class WeatherRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun getCurrentWeather(lat: Double, lon: Double): WeatherResponseDto =
         tryRequest {
-            weatherService.getCurrentWeather(lat, lon)
+            weatherService.getCurrentWeather(lat, lon).copy(fetchedAt = System.currentTimeMillis())
         }
 
     override suspend fun getForecast(lat: Double, lon: Double): ForecastResponseDto = tryRequest {
-        weatherService.getForecastWeather(lat, lon)
+        weatherService.getForecastWeather(lat, lon).copy(fetchedAt = System.currentTimeMillis())
     }
 
     override suspend fun getGeoCityByCoordinates(

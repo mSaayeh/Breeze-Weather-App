@@ -7,6 +7,12 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
@@ -20,14 +26,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.core.os.LocaleListCompat
+import androidx.fragment.app.FragmentManager
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.msayeh.breeze.data.utils.AppLanguage
 import com.msayeh.breeze.presentation.common.MainBottomBar
 import com.msayeh.breeze.presentation.common.dialog.BreezeDialogContainer
@@ -55,8 +65,11 @@ class MainActivity : ComponentActivity() {
 
             LaunchedEffect(appLanguage) {
                 appLanguage?.let {
-                    AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(
-                        it.code))
+                    AppCompatDelegate.setApplicationLocales(
+                        LocaleListCompat.forLanguageTags(
+                            it.code
+                        )
+                    )
                 }
             }
             App(isDarkTheme, appLanguage)
@@ -66,6 +79,17 @@ class MainActivity : ComponentActivity() {
 
 val LocalSnackbarHost = staticCompositionLocalOf { SnackbarHostState() }
 val LocalDialogState = compositionLocalOf { BreezeDialogState() }
+
+fun shouldShowBottomBar(currentBackStackEntry: NavBackStackEntry?): Boolean {
+    val currentRoute = currentBackStackEntry?.destination?.route
+
+    val bottomBarRoutes = setOf(
+        Route.Home::class.qualifiedName,
+        Route.Settings::class.qualifiedName,
+        Route.Alerts::class.qualifiedName,
+    )
+    return bottomBarRoutes.any { currentRoute?.startsWith(it ?: "") == true }
+}
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -77,6 +101,8 @@ fun App(isDarkTheme: Boolean?, appLanguage: AppLanguage?) {
         val navController = rememberNavController()
         val navigateToRouteLambda = { route: Route -> navController.navigate(route) }
 
+        val currentBackStackEntry by navController.currentBackStackEntryAsState()
+
         CompositionLocalProvider(
             LocalSnackbarHost provides SnackbarHostState(),
             LocalDialogState provides BreezeDialogState()
@@ -86,7 +112,13 @@ fun App(isDarkTheme: Boolean?, appLanguage: AppLanguage?) {
                     modifier = Modifier.fillMaxSize(),
                     snackbarHost = { SnackbarHost(LocalSnackbarHost.current) },
                     bottomBar = {
-                        MainBottomBar(navController)
+                        AnimatedVisibility(
+                            shouldShowBottomBar(currentBackStackEntry),
+                            enter = fadeIn(tween()) + slideInVertically(tween(), initialOffsetY = { it / 2 }),
+                            exit = fadeOut(tween()) + slideOutVertically(tween(), targetOffsetY = { it / 2 })
+                        ) {
+                            MainBottomBar(navController)
+                        }
                     },
                 ) {
                     NavHost(

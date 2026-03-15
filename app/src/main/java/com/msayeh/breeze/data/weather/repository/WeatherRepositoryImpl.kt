@@ -17,6 +17,7 @@ import com.msayeh.breeze.domain.model.tryResourceSuspend
 import com.msayeh.breeze.domain.repository.WeatherRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.time.Duration
 import javax.inject.Inject
 
 class WeatherRepositoryImpl @Inject constructor(
@@ -102,8 +103,9 @@ class WeatherRepositoryImpl @Inject constructor(
         localDataSource.replaceForecast(cityEntity.id, forecast.toSlotEntities(cityEntity.id))
     }
 
-    override suspend fun refreshIfStale(cityId: Int): Resource<Unit> =
+    override suspend fun refreshIfStale(cityId: Int): Resource<Boolean> =
         tryResourceSuspend {
+            var hasRefreshed = false
             val city = localDataSource.getCityById(cityId) ?: throw CityNotFoundException()
             val cachedCurrentWeather = localDataSource.getCurrentWeather(cityId)
             if (cachedCurrentWeather == null || CacheUtils.isStale(
@@ -112,6 +114,7 @@ class WeatherRepositoryImpl @Inject constructor(
                 )
             ) {
                 refreshCurrentWeather(cityEntity = city)
+                hasRefreshed = true
             }
             val forecast = localDataSource.getLastForecastSlot(cityId)
             if (forecast == null || CacheUtils.isStale(
@@ -120,7 +123,33 @@ class WeatherRepositoryImpl @Inject constructor(
                 )
             ) {
                 refreshForecast(cityEntity = city)
+                hasRefreshed = true
             }
+            hasRefreshed
+        }
+
+    override suspend fun refreshWithDebounce(cityId: Int, debounceMillis: Long): Resource<Boolean> =
+        tryResourceSuspend {
+            val city = localDataSource.getCityById(cityId) ?: throw CityNotFoundException()
+            val cachedCurrentWeather = localDataSource.getCurrentWeather(cityId)
+            if (cachedCurrentWeather == null || CacheUtils.isStale(
+                    cachedCurrentWeather.fetchedAt,
+                    debounceMillis
+                )
+            ) {
+                refreshWeather(city)
+                return@tryResourceSuspend true
+            }
+            val forecast = localDataSource.getLastForecastSlot(cityId)
+            if (forecast == null || CacheUtils.isStale(
+                    forecast.fetchedAt,
+                    debounceMillis
+                )
+            ) {
+                refreshWeather(city)
+                return@tryResourceSuspend true
+            }
+            return@tryResourceSuspend false
         }
 
     override suspend fun refreshAllCache(): Resource<Unit> =

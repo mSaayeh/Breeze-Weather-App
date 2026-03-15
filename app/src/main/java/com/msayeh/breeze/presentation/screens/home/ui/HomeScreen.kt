@@ -35,6 +35,7 @@ import com.msayeh.breeze.domain.model.WeatherCondition
 import com.msayeh.breeze.domain.model.Wind
 import com.msayeh.breeze.domain.model.getTodaySlots
 import com.msayeh.breeze.domain.model.groupByDay
+import com.msayeh.breeze.presentation.common.BottomBarSpacing
 import com.msayeh.breeze.presentation.navigation.Route
 import com.msayeh.breeze.presentation.screens.home.ui.components.currentweather.CurrentWeatherHomeSection
 import com.msayeh.breeze.presentation.screens.home.ui.components.currentweather.UpdatingIndicator
@@ -124,11 +125,7 @@ fun HomeContent(
                 uiState.cityWeatherDetails?.forecastSlots?.groupByDay(),
                 unitPreferences
             )
-            Spacer(
-                Modifier
-                    .height(128.dp)
-                    .systemBarsPadding()
-            )
+            BottomBarSpacing()
         }
     }
 }

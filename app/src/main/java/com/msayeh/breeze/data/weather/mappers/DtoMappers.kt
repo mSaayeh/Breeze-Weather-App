@@ -27,7 +27,7 @@ fun WeatherResponseDto.toEntity(cityId: Int): CurrentWeatherEntity = CurrentWeat
     fetchedAt = fetchedAt,
 )
 
-fun ForecastSlotDto.toEntity(cityId: Int) = ForecastSlotEntity(
+fun ForecastSlotDto.toEntity(cityId: Int, fetchedAt: Long) = ForecastSlotEntity(
     cityId = cityId,
     weatherName = weather.first().main,
     datetime = datetime,
@@ -44,7 +44,7 @@ fun ForecastSlotDto.toEntity(cityId: Int) = ForecastSlotEntity(
 )
 
 fun ForecastResponseDto.toSlotEntities(cityId: Int): List<ForecastSlotEntity> =
-    forecastsList.map { it.toEntity(cityId) }
+    forecastsList.map { it.toEntity(cityId, fetchedAt) }
 
 fun GeoCityDto.toDomainModel(isCurrentLocation: Boolean): City = City(
     id = -1,
