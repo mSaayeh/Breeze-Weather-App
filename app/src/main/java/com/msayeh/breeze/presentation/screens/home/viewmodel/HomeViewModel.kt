@@ -6,13 +6,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.msayeh.breeze.R
 import com.msayeh.breeze.domain.model.Resource
+import com.msayeh.breeze.domain.model.Temperature
+import com.msayeh.breeze.domain.model.Wind
 import com.msayeh.breeze.domain.repository.PreferencesRepository
 import com.msayeh.breeze.domain.repository.WeatherRepository
 import com.msayeh.breeze.presentation.utils.LocationUtils
-import com.msayeh.breeze.presentation.utils.UiEvent
+import com.msayeh.breeze.presentation.utils.events.UiEvent
 import com.msayeh.breeze.presentation.common.dialog.BreezeDialogData
 import com.msayeh.breeze.presentation.common.dialog.DialogButton
 import com.msayeh.breeze.presentation.common.dialog.DialogButtonType
+import com.msayeh.breeze.presentation.navigation.Route
+import com.msayeh.breeze.presentation.utils.UnitPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -23,6 +27,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -34,7 +39,24 @@ class HomeViewModel @Inject constructor(
     private val prefRepository: PreferencesRepository,
     private val application: Application,
 ) : ViewModel() {
-    private var selectedCityId: StateFlow<Int?> = prefRepository.getChosenCityIdFlow().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+    private var selectedCityId: StateFlow<Int?> = prefRepository.getChosenCityIdFlow()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+    private val selectedTempUnit: StateFlow<Temperature.Unit> = prefRepository.getTempUnitFlow()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Temperature.Unit.CELSIUS)
+
+    private val selectedWindSpeedUnit: StateFlow<Wind.Unit> = prefRepository.getSpeedUnitFlow()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Wind.Unit.METRIC_MS)
+
+    val unitPreferences: StateFlow<UnitPreferences> = combine(
+        selectedTempUnit,
+        selectedWindSpeedUnit
+    ) { tempUnit, speedUnit ->
+        UnitPreferences(tempUnit, speedUnit)
+    }.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(5000),
+        UnitPreferences(Temperature.Unit.CELSIUS, Wind.Unit.METRIC_MS)
+    )
 
     private var observationJob: Job? = null
 
@@ -85,6 +107,14 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun onCityClicked() {
+        viewModelScope.launch {
+            _uiEvent.emit(
+                UiEvent.NavigateTo(Route.Cities)
+            )
+        }
+    }
+
     private fun observeCityWithWeather() {
         observationJob?.cancel()
         observationJob = viewModelScope.launch {
@@ -100,6 +130,7 @@ class HomeViewModel @Inject constructor(
 
     @SuppressLint("MissingPermission")
     fun onLocationPermissionResult(granted: Boolean) {
+        if (selectedCityId.value != null) return
         viewModelScope.launch {
             if (granted) {
                 val coordinates = LocationUtils.getCurrentLocationCoordinates(application)
@@ -142,8 +173,10 @@ class HomeViewModel @Inject constructor(
                         positiveButton = DialogButton(
                             application.getString(R.string.choose_manually_instead),
                             onClick = {
-                                // TODO: Navigate to city selection screen
-                                hideDialog()
+                                viewModelScope.launch {
+                                    _uiEvent.emit(UiEvent.NavigateTo(Route.Cities))
+                                    hideDialog()
+                                }
                             }
                         )
                     ).dismissable(false).build()
@@ -164,9 +197,11 @@ class HomeViewModel @Inject constructor(
                             onClick = {
                                 viewModelScope.launch {
                                     _uiEvent.emit(UiEvent.OpenAppSettings(application.getString(R.string.enable_location_permission)))
-                                    delay(1000)
-                                    if (LocationUtils.checkLocationPermission(application)) {
-                                        hideDialog()
+                                    while (true) {
+                                        delay(1000)
+                                        if (LocationUtils.checkLocationPermission(application)) {
+                                            hideDialog()
+                                        }
                                     }
                                 }
                             },

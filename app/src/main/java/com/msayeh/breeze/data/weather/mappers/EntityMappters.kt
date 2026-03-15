@@ -40,7 +40,6 @@ fun CurrentWeatherEntity.toDomainModel() = Weather(
     condition = WeatherCondition(
         title = weatherName,
         iconCode = iconCode,
-        iconDrawableRes = getDrawableFromIconCode(iconCode),
     ),
     pressure = pressure,
     sunCycle = SunCycle(
@@ -65,7 +64,6 @@ fun ForecastSlotEntity.toDomainModel() = ForecastSlot(
         condition = WeatherCondition(
             iconCode = iconCode,
             title = weatherName,
-            iconDrawableRes = getDrawableFromIconCode(iconCode),
         ),
         pressure = pressure,
         sunCycle = null,
@@ -78,7 +76,3 @@ fun CityWithWeather.toDomainModel() = CityWeatherDetails(
     currentWeather = currentWeather?.toDomainModel(),
     forecastSlots = forecastSlots.map { it.toDomainModel();  }
 )
-@DrawableRes
-fun getDrawableFromIconCode(iconCode: String): Int = when (iconCode) {
-    else -> R.drawable.ic_launcher_foreground
-}

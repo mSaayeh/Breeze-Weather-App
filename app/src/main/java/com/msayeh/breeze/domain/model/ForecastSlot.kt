@@ -22,3 +22,19 @@ fun List<ForecastSlot>.groupByDay(): List<ForecastDay> =
             )
         )
     }.sortedBy { it.date }
+
+fun List<ForecastSlot>.getDay(date: LocalDateTime): ForecastDay? =
+    firstOrNull { it.datetime.toLocalDate() == date.toLocalDate() }?.let {
+        ForecastDay(
+            date = date.toLocalDate(),
+            slots = listOf(it),
+            representative = it,
+            temperatureRange = TemperatureRange(
+                Temperature(it.weather.temperature.celsius),
+                Temperature(it.weather.temperature.celsius)
+            )
+        )
+    }
+
+fun List<ForecastSlot>.getTodaySlots(): List<ForecastSlot> =
+    filter { it.datetime.toLocalDate() == LocalDateTime.now().toLocalDate() }

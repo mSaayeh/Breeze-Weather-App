@@ -127,6 +127,7 @@ dependencies {
     implementation(libs.bottombar)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.lottie)
+    implementation(libs.androidx.compose.ui.text.google.fonts)
 }
 
 // Dependency Injection

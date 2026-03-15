@@ -11,16 +11,17 @@ interface PreferencesRepository {
     fun getChosenCityIdFlow(): Flow<Int?>
     suspend fun saveChosenCityId(cityId: Int)
 
-    fun isDarkThemeEnabled(): Flow<Boolean?>
+    fun isDarkThemeEnabledFlow(): Flow<Boolean?>
     suspend fun saveDarkTheme(isDarkThemeEnabled: Boolean)
 
-    fun getLanguage(): Flow<AppLanguage?>
+    fun getLanguageFlow(): Flow<AppLanguage?>
+    suspend fun getLanguage(): AppLanguage?
     suspend fun saveLanguage(appLanguage: AppLanguage)
 
-    fun getTempUnit(): Flow<Temperature.Unit?>
+    fun getTempUnitFlow(): Flow<Temperature.Unit>
     suspend fun saveTempUnit(unit: Temperature.Unit)
 
-    fun getSpeedUnit(): Flow<Wind.Unit?>
+    fun getSpeedUnitFlow(): Flow<Wind.Unit>
     suspend fun saveSpeedUnit(unit: Wind.Unit)
 
     suspend fun clearPreferences()

@@ -10,7 +10,9 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import com.msayeh.breeze.data.utils.AppLanguage
 
 internal val DarkColorScheme = darkColorScheme(
     primary = Color(0xFF224256),
@@ -33,29 +35,29 @@ internal val LightColorScheme = lightColorScheme(
     surface = LightColors.Surface,
     onPrimary = LightColors.OnPrimary,
     onSurface = LightColors.OnSurface,
-    onBackground = LightColors.OnBackground
+    onBackground = LightColors.OnBackground,
+    tertiary = LightColors.Tertiary,
+    error = LightColors.Error,
+    onError = LightColors.OnError,
 )
 
 @Composable
 fun BreezeTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = false,
+    appLanguage: AppLanguage? = null,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
 
+    val language = appLanguage ?: AppLanguage.fromCode(LocalConfiguration.current.locales.get(0).language ?: "en")
+
     CompositionLocalProvider(LocalGradients provides Gradients(colorScheme)) {
         MaterialTheme(
             colorScheme = colorScheme,
-            typography = Typography,
+            typography = appTypography(language == AppLanguage.ARABIC),
             content = content
         )
     }

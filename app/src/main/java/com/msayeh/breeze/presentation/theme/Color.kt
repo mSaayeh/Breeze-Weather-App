@@ -10,4 +10,7 @@ object LightColors {
     val OnSurface = Color(0xFF0A0A0A)
     val OnPrimary = Color(0xFFFFFFFF)
     val OnBackground = Color(0xFF0A0A0A)
+    val Error = Color(0xFFB00020)
+    val OnError = Color(0xFFFFFFFF)
+    val Tertiary = Color(0xFFFAEF16)
 }

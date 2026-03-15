@@ -6,6 +6,10 @@ import com.msayeh.breeze.domain.model.Temperature
 import com.msayeh.breeze.domain.model.Wind
 import com.msayeh.breeze.domain.repository.PreferencesRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -24,30 +28,36 @@ class PreferencesRepositoryImpl @Inject constructor(
     override suspend fun saveChosenCityId(cityId: Int) =
         preferencesDataSource.saveChosenCityId(cityId)
 
-    override fun isDarkThemeEnabled(): Flow<Boolean?> = preferencesDataSource.isDarkThemeFlow()
+    override fun isDarkThemeEnabledFlow(): Flow<Boolean?> = preferencesDataSource.isDarkThemeFlow()
 
     override suspend fun saveDarkTheme(isDarkThemeEnabled: Boolean) =
         preferencesDataSource.saveIsDarkTheme(isDarkThemeEnabled)
 
-    override fun getLanguage(): Flow<AppLanguage?> = preferencesDataSource.languageFlow().map {
+    override fun getLanguageFlow(): Flow<AppLanguage?> = preferencesDataSource.languageFlow().map {
         if (it == null) return@map null
         AppLanguage.fromCode(it)
+    }
+
+    override suspend fun getLanguage(): AppLanguage? {
+        val languageCode = preferencesDataSource.languageFlow().firstOrNull() ?: return null
+        val language = AppLanguage.fromCode(languageCode)
+        return language
     }
 
     override suspend fun saveLanguage(appLanguage: AppLanguage) =
         preferencesDataSource.saveLanguage(appLanguage.code)
 
-    override fun getTempUnit(): Flow<Temperature.Unit?> =
+    override fun getTempUnitFlow(): Flow<Temperature.Unit> =
         preferencesDataSource.getTempUnitFlow().map {
-            if (it == null) return@map null
+            if (it == null) return@map Temperature.Unit.CELSIUS
             Temperature.Unit.fromCode(it)
         }
 
     override suspend fun saveTempUnit(unit: Temperature.Unit) =
         preferencesDataSource.saveTempUnit(unit.code)
 
-    override fun getSpeedUnit(): Flow<Wind.Unit?> = preferencesDataSource.getSpeedUnitFlow().map {
-        if (it == null) return@map null
+    override fun getSpeedUnitFlow(): Flow<Wind.Unit> = preferencesDataSource.getSpeedUnitFlow().map {
+        if (it == null) return@map Wind.Unit.METRIC_MS
         Wind.Unit.fromCode(it)
     }
 

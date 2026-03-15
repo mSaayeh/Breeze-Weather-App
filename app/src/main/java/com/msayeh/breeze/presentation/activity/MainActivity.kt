@@ -14,6 +14,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -27,11 +28,13 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.msayeh.breeze.data.utils.AppLanguage
 import com.msayeh.breeze.presentation.common.MainBottomBar
 import com.msayeh.breeze.presentation.common.dialog.BreezeDialogContainer
 import com.msayeh.breeze.presentation.common.dialog.BreezeDialogState
 import com.msayeh.breeze.presentation.navigation.Route
 import com.msayeh.breeze.presentation.screens.alerts.AlertsScreen
+import com.msayeh.breeze.presentation.screens.cities.CitiesScreen
 import com.msayeh.breeze.presentation.screens.home.ui.HomeScreen
 import com.msayeh.breeze.presentation.screens.settings.SettingsScreen
 import com.msayeh.breeze.presentation.theme.BreezeTheme
@@ -46,20 +49,17 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        initializeLocale()
         setContent {
             val isDarkTheme by viewModel.isDarkMode.collectAsStateWithLifecycle()
-            App(isDarkTheme)
-        }
-    }
+            val appLanguage by viewModel.selectedLanguage.collectAsStateWithLifecycle()
 
-    fun initializeLocale() {
-        lifecycleScope.launch {
-            viewModel.selectedLanguage.collectLatest {
-                if (it != null) {
-                    AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(it.code))
+            LaunchedEffect(appLanguage) {
+                appLanguage?.let {
+                    AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(
+                        it.code))
                 }
             }
+            App(isDarkTheme, appLanguage)
         }
     }
 }
@@ -69,11 +69,13 @@ val LocalDialogState = compositionLocalOf { BreezeDialogState() }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun App(isDarkTheme: Boolean?) {
+fun App(isDarkTheme: Boolean?, appLanguage: AppLanguage?) {
     BreezeTheme(
         darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
+        appLanguage = appLanguage,
     ) {
         val navController = rememberNavController()
+        val navigateToRouteLambda = { route: Route -> navController.navigate(route) }
 
         CompositionLocalProvider(
             LocalSnackbarHost provides SnackbarHostState(),
@@ -94,13 +96,16 @@ fun App(isDarkTheme: Boolean?) {
                         startDestination = Route.Home,
                     ) {
                         composable<Route.Home> {
-                            HomeScreen()
+                            HomeScreen(navigateToRouteLambda)
                         }
                         composable<Route.Settings> {
-                            SettingsScreen()
+                            SettingsScreen(navigateToRouteLambda)
                         }
                         composable<Route.Alerts> {
-                            AlertsScreen()
+                            AlertsScreen(navigateToRouteLambda)
+                        }
+                        composable<Route.Cities> {
+                            CitiesScreen(navigateToRouteLambda)
                         }
                     }
                 }

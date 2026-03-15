@@ -17,4 +17,13 @@
     <string name="choose_manually_instead">Choose manually instead</string>
     <string name="enable_location_permission">Enable location permission</string>
     <string name="choose_city">Choose city</string>
+    <string name="updating">Updating</string>
+    <string name="wind">Wind</string>
+    <string name="humidity">Humidity</string>
+    <string name="pressure">Pressure</string>
+    <string name="m_s">m/s</string>
+    <string name="km_h">km/h</string>
+    <string name="mph">mph</string>
+    <string name="today_forecast">Today\'s Forecast</string>
+    <string name="daily_forecast">Daily Forecast</string>
 </resources>

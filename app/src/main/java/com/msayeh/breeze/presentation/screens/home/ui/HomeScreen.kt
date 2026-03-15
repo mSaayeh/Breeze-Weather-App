@@ -3,39 +3,69 @@ package com.msayeh.breeze.presentation.screens.home.ui
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.OverscrollEffect
+import androidx.compose.foundation.gestures.FlingBehavior
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.msayeh.breeze.domain.model.City
+import com.msayeh.breeze.domain.model.CityWeatherDetails
+import com.msayeh.breeze.domain.model.Coordinates
+import com.msayeh.breeze.domain.model.Temperature
+import com.msayeh.breeze.domain.model.Weather
+import com.msayeh.breeze.domain.model.WeatherCondition
+import com.msayeh.breeze.domain.model.Wind
+import com.msayeh.breeze.domain.model.getTodaySlots
+import com.msayeh.breeze.domain.model.groupByDay
+import com.msayeh.breeze.presentation.navigation.Route
+import com.msayeh.breeze.presentation.screens.home.ui.components.currentweather.CurrentWeatherHomeSection
+import com.msayeh.breeze.presentation.screens.home.ui.components.currentweather.UpdatingIndicator
+import com.msayeh.breeze.presentation.screens.home.ui.components.forecast.DailyForecastSection
+import com.msayeh.breeze.presentation.screens.home.ui.components.forecast.TodayForecastSection
 import com.msayeh.breeze.presentation.utils.LocationUtils
-import com.msayeh.breeze.presentation.utils.UiEventsHandler
 import com.msayeh.breeze.presentation.screens.home.viewmodel.HomeState
 import com.msayeh.breeze.presentation.screens.home.viewmodel.HomeViewModel
+import com.msayeh.breeze.presentation.utils.UnitPreferences
+import com.msayeh.breeze.presentation.utils.events.UiEventsHandler
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel = hiltViewModel()) {
+fun HomeScreen(
+    navigateToRoute: (Route) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = hiltViewModel()
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
+    val unitPreferences by viewModel.unitPreferences.collectAsStateWithLifecycle()
     val app = LocalContext.current.applicationContext
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        val granted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
-                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        val granted =
+            permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true || permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
 
         viewModel.onLocationPermissionResult(granted)
     }
 
-    UiEventsHandler(viewModel.uiEvent)
+    UiEventsHandler(viewModel.uiEvent, navigateToRoute)
 
     LaunchedEffect(uiState.isCitySelected) {
         if (uiState.isCitySelected.not() && LocationUtils.checkLocationPermission(app).not()) {
@@ -50,23 +80,92 @@ fun HomeScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel = hiltVie
 
     HomeContent(
         uiState,
+        unitPreferences,
         viewModel::refreshWeather,
+        viewModel::onCityClicked,
         modifier = modifier.fillMaxSize(),
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeContent(uiState: HomeState, onRefresh: () -> Unit, modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
-        Text("Home Screen")
-        if (uiState.isLoading) {
-            CircularProgressIndicator()
-        } else if (uiState.cityWeatherDetails != null) {
-            Text(uiState.cityWeatherDetails.currentWeather?.temperature.toString())
-            Text("Feels Like: ${uiState.cityWeatherDetails.currentWeather?.feelsLike}")
-        }
-        Button(onRefresh) {
-            Text("Refresh")
+fun HomeContent(
+    uiState: HomeState,
+    unitPreferences: UnitPreferences,
+    onRefresh: () -> Unit,
+    onCityClicked: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val scrollState = rememberScrollState()
+    val pullToRefreshState = rememberPullToRefreshState()
+
+    PullToRefreshBox(
+        uiState.isLoading,
+        onRefresh,
+        modifier = modifier,
+        state = pullToRefreshState,
+        indicator = { },
+    ) {
+        Column(modifier = Modifier.verticalScroll(scrollState)) {
+            CurrentWeatherHomeSection(
+                uiState.cityWeatherDetails?.currentWeather,
+                onCityClicked,
+                unitPreferences,
+                uiState.cityWeatherDetails?.city?.name,
+                uiState.isLoading,
+            )
+            Spacer(Modifier.height(16.dp))
+            TodayForecastSection(
+                uiState.cityWeatherDetails?.forecastSlots?.getTodaySlots(),
+                unitPreferences
+            )
+            Spacer(Modifier.height(16.dp))
+            DailyForecastSection(
+                uiState.cityWeatherDetails?.forecastSlots?.groupByDay(),
+                unitPreferences
+            )
+            Spacer(
+                Modifier
+                    .height(128.dp)
+                    .systemBarsPadding()
+            )
         }
     }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+private fun HomeContentPreview() {
+    HomeContent(
+        HomeState(
+            cityWeatherDetails = CityWeatherDetails(
+                city = City(
+                    -1,
+                    "Cairo",
+                    "EG",
+                    Coordinates(15.2, 13.6),
+                    isCurrentLocation = true,
+                    sortOrder = 5,
+                ),
+                currentWeather = Weather(
+                    cityId = 5,
+                    temperature = Temperature(12.0),
+                    feelsLike = Temperature(12.0),
+                    humidity = 100,
+                    wind = Wind(15.0, 23),
+                    condition = WeatherCondition("Cloudy", "01n"),
+                    pressure = 1000,
+                    sunCycle = null,
+                    fetchedAt = 1518917,
+                ), forecastSlots = emptyList()
+            ),
+            isLoading = true, isCitySelected = false,
+        ),
+        UnitPreferences(
+            Temperature.Unit.CELSIUS,
+            Wind.Unit.METRIC_MS
+        ),
+        {},
+        {},
+    )
 }

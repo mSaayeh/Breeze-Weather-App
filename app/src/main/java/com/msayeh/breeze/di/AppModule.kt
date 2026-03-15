@@ -7,6 +7,7 @@ import com.msayeh.breeze.data.interceptor.PreferencesInterceptor
 import com.msayeh.breeze.data.weather.local.database.WeatherDatabase
 import com.msayeh.breeze.data.weather.remote.service.GeoService
 import com.msayeh.breeze.data.weather.remote.service.WeatherService
+import com.msayeh.breeze.domain.repository.PreferencesRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,19 +24,20 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(): Retrofit {
-        val client = OkHttpClient.Builder()
-            .addInterceptor(PreferencesInterceptor())
+    fun provideOkHttpClient(preferencesRepository: PreferencesRepository): OkHttpClient =
+        OkHttpClient.Builder()
+            .addInterceptor(PreferencesInterceptor(preferencesRepository))
             .addInterceptor(ApiKeyInterceptor())
             .addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BODY) })
             .build()
 
-        return Retrofit.Builder()
-            .baseUrl("https://api.openweathermap.org/")
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
+    @Provides
+    @Singleton
+    fun provideRetrofit(client: OkHttpClient): Retrofit = Retrofit.Builder()
+        .baseUrl("https://api.openweathermap.org/")
+        .client(client)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
 
     @Provides
     @Singleton
