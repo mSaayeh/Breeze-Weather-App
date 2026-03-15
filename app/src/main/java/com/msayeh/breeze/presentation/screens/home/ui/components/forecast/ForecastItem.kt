@@ -2,7 +2,10 @@ package com.msayeh.breeze.presentation.screens.home.ui.components.forecast
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.msayeh.breeze.domain.model.Temperature
 
@@ -36,24 +40,30 @@ fun ForecastItem(
             contentColor = MaterialTheme.colorScheme.onSurface,
         ),
     ) {
-        Image(
-            painterResource(iconRes),
-            contentDescription = contentDescription,
-            modifier = Modifier
-                .padding(top = 8.dp, start = 8.dp, end = 8.dp)
-                .height(48.dp)
-                .width(48.dp)
-                .align(Alignment.CenterHorizontally)
-        )
-        Spacer(Modifier.height(4.dp))
-        Text(
-            temperature,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-        )
-        Spacer(Modifier.height(4.dp))
-        Text(
-            dateTime,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
+        Column(
+            verticalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxSize().padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Text(
+                dateTime,
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.Medium,
+                ),
+            )
+            Image(
+                painterResource(iconRes),
+                contentDescription = contentDescription,
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .height(48.dp)
+                    .width(48.dp)
+            )
+            Text(
+                temperature,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        }
     }
 }

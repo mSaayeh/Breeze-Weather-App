@@ -54,7 +54,7 @@ fun TodayForecastSection(
                         it.weather.condition.iconRes,
                         it.weather.condition.title,
                         it.weather.temperature.format(unitPreferences.tempUnit),
-                        it.datetime.toLocalTime().format(DateTimeFormatter.ofPattern("hh:mm a")),
+                        it.datetime.toLocalTime().format(DateTimeFormatter.ofPattern("h a")),
                     )
                 }
             }
