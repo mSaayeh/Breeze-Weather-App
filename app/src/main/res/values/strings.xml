@@ -27,4 +27,6 @@
     <string name="today_forecast">Today\'s Forecast</string>
     <string name="daily_forecast">Daily Forecast</string>
     <string name="please_wait_some_time_before_refreshing_again">Please wait some time before refreshing again.</string>
+    <string name="manage_cities">Manage Cities</string>
+    <string name="current_location">Current Location</string>
 </resources>

@@ -26,31 +26,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.core.os.LocaleListCompat
-import androidx.fragment.app.FragmentManager
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import com.msayeh.breeze.data.utils.AppLanguage
 import com.msayeh.breeze.presentation.common.MainBottomBar
 import com.msayeh.breeze.presentation.common.dialog.BreezeDialogContainer
 import com.msayeh.breeze.presentation.common.dialog.BreezeDialogState
 import com.msayeh.breeze.presentation.navigation.Route
+import com.msayeh.breeze.presentation.screens.addcity.AddCityScreen
 import com.msayeh.breeze.presentation.screens.alerts.AlertsScreen
-import com.msayeh.breeze.presentation.screens.cities.CitiesScreen
+import com.msayeh.breeze.presentation.screens.cities.ui.CitiesScreen
 import com.msayeh.breeze.presentation.screens.home.ui.HomeScreen
 import com.msayeh.breeze.presentation.screens.settings.SettingsScreen
 import com.msayeh.breeze.presentation.theme.BreezeTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -137,7 +130,10 @@ fun App(isDarkTheme: Boolean?, appLanguage: AppLanguage?) {
                             AlertsScreen(navigateToRouteLambda)
                         }
                         composable<Route.Cities> {
-                            CitiesScreen(navigateToRouteLambda)
+                            CitiesScreen(navigateToRouteLambda, navController::navigateUp)
+                        }
+                        composable<Route.AddCity> {
+                            AddCityScreen(navController::navigateUp)
                         }
                     }
                 }

@@ -12,4 +12,6 @@ sealed class Route(val routeName: String = this::class.qualifiedName ?: "") {
     object Alerts : Route()
     @Serializable
     object Settings : Route()
+    @Serializable
+    object AddCity : Route()
 }

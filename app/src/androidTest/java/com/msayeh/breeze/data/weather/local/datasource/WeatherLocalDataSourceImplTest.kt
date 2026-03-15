@@ -51,9 +51,8 @@ class WeatherLocalDataSourceImplTest {
         "EG",
         15.2,
         16.5,
-        false,
+        1,
         3,
-        15156
     )
 
     @Before

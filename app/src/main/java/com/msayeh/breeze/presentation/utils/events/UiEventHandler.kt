@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun UiEventsHandler(uiEventStateFlow: SharedFlow<UiEvent>, handleNavigation: (Route) -> Unit) {
+fun UiEventsHandler(uiEventStateFlow: SharedFlow<UiEvent>, handleNavigation: ((Route) -> Unit)? = null, navigateBack: (() -> Unit)? = null) {
     val snackbarHost = LocalSnackbarHost.current
     val dialogState = LocalDialogState.current
     val context = LocalContext.current
@@ -22,7 +22,7 @@ fun UiEventsHandler(uiEventStateFlow: SharedFlow<UiEvent>, handleNavigation: (Ro
     LaunchedEffect(Unit) {
         uiEventStateFlow.collectLatest { event ->
             when (event) {
-                is UiEvent.NavigateTo -> handleNavigation(event.route)
+                is UiEvent.NavigateTo -> handleNavigation?.invoke(event.route) ?: throw IllegalArgumentException("No navigation handler provided")
                 is UiEvent.ShowSnackbar -> snackbarHost.showSnackbar(event.message)
                 is UiEvent.ShowDialog -> dialogState.showDialog(event.dialog)
                 is UiEvent.OpenAppSettings -> {
@@ -31,6 +31,9 @@ fun UiEventsHandler(uiEventStateFlow: SharedFlow<UiEvent>, handleNavigation: (Ro
                     }
                     Toast.makeText(context, event.toastMessage, Toast.LENGTH_SHORT).show()
                     context.startActivity(intent)
+                }
+                is UiEvent.NavigateBack -> {
+                    navigateBack?.invoke() ?: throw IllegalArgumentException("No Navigate back handler provided")
                 }
             }
         }
