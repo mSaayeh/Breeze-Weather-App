@@ -139,6 +139,7 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.hilt.work)
 }
 
 // Backward Compatibility
@@ -156,4 +157,9 @@ dependencies {
 // Data Store
 dependencies {
     implementation(libs.androidx.datastore.preferences)
+}
+
+// Work Manager
+dependencies {
+    implementation(libs.androidx.work.runtime.ktx)
 }
