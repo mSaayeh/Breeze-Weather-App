@@ -93,6 +93,7 @@ dependencies {
     testImplementation(libs.hamcrest.library)
     testImplementation(libs.mockk.android)
     testImplementation(libs.mockk.agent)
+    testImplementation(libs.robolectric)
 }
 
 // Networking

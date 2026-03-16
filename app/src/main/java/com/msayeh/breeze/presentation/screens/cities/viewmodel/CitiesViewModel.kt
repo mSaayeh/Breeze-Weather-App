@@ -40,6 +40,7 @@ class CitiesViewModel @Inject constructor(
     val uiEvent = _uiEvent.asSharedFlow()
 
     private var permissionCheckJob: Job? = null
+    private var updateCurrentLocationJob: Job? = null
 
     private val cities = weatherRepository.observeAllCities()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -124,7 +125,8 @@ class CitiesViewModel @Inject constructor(
     }
 
     fun onUpdateCurrentLocationClicked() {
-        viewModelScope.launch {
+        updateCurrentLocationJob?.cancel()
+        updateCurrentLocationJob = viewModelScope.launch {
             if (!LocationUtils.checkLocationPermission(application)) {
                 _uiEvent.emit(UiEvent.OpenAppSettings(application.getString(R.string.enable_location_permission)))
                 permissionCheckJob?.cancel()

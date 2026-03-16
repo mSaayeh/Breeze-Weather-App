@@ -1,6 +1,8 @@
 package com.msayeh.breeze.domain.repository
 
 import com.msayeh.breeze.data.utils.CacheUtils
+import com.msayeh.breeze.domain.model.Alert
+import com.msayeh.breeze.domain.model.AlertCityDetails
 import com.msayeh.breeze.domain.model.City
 import com.msayeh.breeze.domain.model.CityWeatherDetails
 import com.msayeh.breeze.domain.model.Coordinates
@@ -21,4 +23,9 @@ interface WeatherRepository {
     suspend fun refreshWithDebounce(cityId: Int, debounceMillis: Long = CacheUtils.DEFAULT_REFRESH_DEBOUNCE_TIME): Resource<Boolean>
     suspend fun refreshAllCache(): Resource<Unit>
     suspend fun refreshAllIfStale(): Resource<Unit>
+    fun observeAllAlerts(): Flow<List<AlertCityDetails>>
+    fun observeAllActiveAlerts(): Flow<List<AlertCityDetails>>
+    suspend fun upsertAlert(alert: Alert): Resource<Unit>
+    suspend fun updateAlertEnabled(alertId: Int, enabled: Boolean): Resource<Unit>
+    suspend fun deleteAlert(alertId: Int): Resource<Unit>
 }

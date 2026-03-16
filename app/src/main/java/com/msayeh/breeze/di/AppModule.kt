@@ -76,4 +76,8 @@ object AppModule {
     @Provides
     @Singleton
     fun provideCityWeatherDao(db: WeatherDatabase) = db.cityWeatherDao()
+
+    @Provides
+    @Singleton
+    fun provideCityAlertDao(db: WeatherDatabase) = db.cityAlertDao()
 }

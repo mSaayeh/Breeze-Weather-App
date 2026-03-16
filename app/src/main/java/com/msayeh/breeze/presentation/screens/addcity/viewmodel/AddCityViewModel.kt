@@ -59,8 +59,8 @@ class AddCityViewModel @Inject constructor(
                         }
 
                         is Resource.Success<*> -> {
-                            _uiEvent.emit(UiEvent.ShowSnackbar(application.getString(R.string.location_added_successfully)))
                             _uiEvent.emit(UiEvent.NavigateBack)
+                            _uiEvent.emit(UiEvent.ShowSnackbar(application.getString(R.string.location_added_successfully)))
                         }
                     }
                 }

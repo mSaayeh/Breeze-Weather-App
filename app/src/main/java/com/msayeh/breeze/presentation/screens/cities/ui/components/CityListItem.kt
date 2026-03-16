@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.msayeh.breeze.R
 import com.msayeh.breeze.domain.model.City
+import com.msayeh.breeze.presentation.common.DeleteBackground
 
 @Composable
 fun CityListItem(
@@ -91,32 +92,5 @@ fun CityListItem(
                 .clip(RoundedCornerShape(12.dp))
                 .clickable(onClick = onCityClicked),
         )
-    }
-}
-
-@Composable
-private fun DeleteBackground(state: SwipeToDismissBoxState) {
-    val color by animateColorAsState(
-        targetValue = when (state.targetValue) {
-            SwipeToDismissBoxValue.EndToStart -> MaterialTheme.colorScheme.errorContainer
-            else -> Color.Transparent
-        },
-        label = "swipe_bg_color"
-    )
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color)
-            .padding(end = 16.dp),
-        contentAlignment = Alignment.CenterEnd
-    ) {
-        if (state.targetValue == SwipeToDismissBoxValue.EndToStart) {
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = "Delete",
-                tint = MaterialTheme.colorScheme.onErrorContainer
-            )
-        }
     }
 }

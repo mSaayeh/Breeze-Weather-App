@@ -25,6 +25,7 @@ mockk = "1.14.9"
 navigationCompose = "2.9.7"
 palette = "1.0.0"
 retrofit = "3.0.0"
+robolectric = "4.16.1"
 room = "2.8.4"
 daggerHilt = "2.59.2"
 playServicesLocation = "21.3.0"
@@ -78,6 +79,7 @@ mockk-agent = { module = "io.mockk:mockk-agent", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 secrets-gradle-plugin = { module = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
 
 [plugins]

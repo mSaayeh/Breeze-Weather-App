@@ -9,6 +9,8 @@ import com.msayeh.breeze.data.weather.mappers.toEntity
 import com.msayeh.breeze.data.weather.mappers.toSlotEntities
 import com.msayeh.breeze.data.weather.remote.datasource.WeatherRemoteDataSource
 import com.msayeh.breeze.domain.exception.CityNotFoundException
+import com.msayeh.breeze.domain.model.Alert
+import com.msayeh.breeze.domain.model.AlertCityDetails
 import com.msayeh.breeze.domain.model.City
 import com.msayeh.breeze.domain.model.CityWeatherDetails
 import com.msayeh.breeze.domain.model.Coordinates
@@ -166,5 +168,27 @@ class WeatherRepositoryImpl @Inject constructor(
             cities.forEach { city ->
                 refreshIfStale(city.id)
             }
+        }
+
+    override fun observeAllAlerts(): Flow<List<AlertCityDetails>> =
+        localDataSource.observeAllAlerts().map { alerts -> alerts.map { it.toDomainModel() } }
+
+    override fun observeAllActiveAlerts(): Flow<List<AlertCityDetails>> =
+        localDataSource.observeAllActiveAlerts().map { alerts -> alerts.map { it.toDomainModel() } }
+
+    override suspend fun upsertAlert(alert: Alert): Resource<Unit> = tryResourceSuspend {
+        localDataSource.upsertAlert(alert.toEntity())
+    }
+
+    override suspend fun updateAlertEnabled(
+        alertId: Int,
+        enabled: Boolean
+    ): Resource<Unit> = tryResourceSuspend {
+        localDataSource.updateAlertEnabled(alertId, enabled)
+    }
+
+    override suspend fun deleteAlert(alertId: Int): Resource<Unit> =
+        tryResourceSuspend {
+            localDataSource.deleteAlert(alertId)
         }
 }

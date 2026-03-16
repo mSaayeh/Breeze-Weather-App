@@ -20,7 +20,7 @@ import com.msayeh.breeze.R
 import com.msayeh.breeze.data.utils.AppLanguage
 import com.msayeh.breeze.domain.model.Temperature
 import com.msayeh.breeze.domain.model.Wind
-import com.msayeh.breeze.presentation.common.BottomBarSpacing
+import com.msayeh.breeze.presentation.common.navbar.BottomBarSpacing
 import com.msayeh.breeze.presentation.screens.settings.ui.components.SettingsSection
 import com.msayeh.breeze.presentation.screens.settings.ui.components.SettingsSelector
 import com.msayeh.breeze.presentation.screens.settings.viewmodel.SettingsViewModel

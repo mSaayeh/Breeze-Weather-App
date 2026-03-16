@@ -21,7 +21,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -34,12 +33,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.msayeh.breeze.data.utils.AppLanguage
-import com.msayeh.breeze.presentation.common.MainBottomBar
+import com.msayeh.breeze.presentation.common.navbar.MainBottomBar
 import com.msayeh.breeze.presentation.common.dialog.BreezeDialogContainer
 import com.msayeh.breeze.presentation.common.dialog.BreezeDialogState
 import com.msayeh.breeze.presentation.navigation.Route
 import com.msayeh.breeze.presentation.screens.addcity.ui.AddCityScreen
-import com.msayeh.breeze.presentation.screens.alerts.AlertsScreen
+import com.msayeh.breeze.presentation.screens.alerts.ui.AlertsScreen
 import com.msayeh.breeze.presentation.screens.cities.ui.CitiesScreen
 import com.msayeh.breeze.presentation.screens.home.ui.HomeScreen
 import com.msayeh.breeze.presentation.screens.settings.ui.SettingsScreen
@@ -108,8 +107,12 @@ fun App(isDarkTheme: Boolean?, appLanguage: AppLanguage?) {
                     bottomBar = {
                         AnimatedVisibility(
                             shouldShowBottomBar(currentBackStackEntry),
-                            enter = fadeIn(tween()) + slideInVertically(tween(), initialOffsetY = { it / 2 }),
-                            exit = fadeOut(tween()) + slideOutVertically(tween(), targetOffsetY = { it / 2 })
+                            enter = fadeIn(tween()) + slideInVertically(
+                                tween(),
+                                initialOffsetY = { it / 2 }),
+                            exit = fadeOut(tween()) + slideOutVertically(
+                                tween(),
+                                targetOffsetY = { it / 2 })
                         ) {
                             MainBottomBar(navController)
                         }

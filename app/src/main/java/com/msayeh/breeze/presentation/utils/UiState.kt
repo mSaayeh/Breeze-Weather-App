@@ -21,40 +21,39 @@ sealed class UiState<out T> {
 
     @Composable
     fun UiHandler(
-        onSuccess: @Composable (T) -> Unit,
         modifier: Modifier = Modifier,
         onError: (@Composable (LocalizedException) -> Unit)? = null,
         onLoading: (@Composable () -> Unit)? = null,
+        onSuccess: @Composable (T) -> Unit,
     ) = when (this) {
         is Success -> onSuccess(data)
-        is Error -> onError?.invoke(localizedException) ?: (@Composable {
-            Box(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    stringResource(localizedException.messageResId),
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-        })()
+        is Error -> onError?.invoke(localizedException) ?: DefaultOnError(localizedException, modifier = modifier)
 
-        Loading -> onLoading?.invoke() ?: (@Composable {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        })()
+        Loading -> onLoading?.invoke() ?: DefaultOnLoading(modifier = modifier)
     }
+}
 
-    companion object {
-        fun <T> fromResource(resource: Resource<T>) = when (resource) {
-            is Resource.Success -> Success(resource.data)
-            is Resource.Error -> Error(resource.exception)
-        }
+@Composable
+private fun DefaultOnError(localizedException: LocalizedException, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            stringResource(localizedException.messageResId),
+            style = MaterialTheme.typography.bodyLarge
+        )
+    }
+}
+
+@Composable
+private fun DefaultOnLoading(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
     }
 }

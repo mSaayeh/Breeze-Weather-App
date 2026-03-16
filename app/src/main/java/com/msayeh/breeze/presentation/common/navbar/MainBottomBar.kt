@@ -1,7 +1,6 @@
-package com.msayeh.breeze.presentation.common
+package com.msayeh.breeze.presentation.common.navbar
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -36,7 +34,6 @@ import com.example.bottombar.model.ItemStyle
 import com.example.bottombar.model.VisibleItem
 import com.msayeh.breeze.R
 import com.msayeh.breeze.presentation.navigation.Route
-import com.msayeh.breeze.presentation.theme.gradients
 import kotlin.reflect.KClass
 
 private enum class NavBarItem(
@@ -116,13 +113,4 @@ private fun BottomBarContent(controller: NavHostController, modifier: Modifier =
             )
         }
     }
-}
-
-@Composable
-fun BottomBarSpacing() {
-    Spacer(
-        Modifier
-            .height(128.dp)
-            .systemBarsPadding()
-    )
 }

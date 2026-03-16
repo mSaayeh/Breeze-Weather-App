@@ -1,9 +1,12 @@
 package com.msayeh.breeze.data.weather.local.datasource
 
 import android.database.sqlite.SQLiteConstraintException
+import com.msayeh.breeze.data.weather.local.dao.CityAlertDao
 import com.msayeh.breeze.data.weather.local.dao.CityDao
 import com.msayeh.breeze.data.weather.local.dao.CityWeatherDao
 import com.msayeh.breeze.data.weather.local.dao.WeatherDao
+import com.msayeh.breeze.data.weather.local.entities.AlertEntity
+import com.msayeh.breeze.data.weather.local.entities.AlertWithCity
 import com.msayeh.breeze.data.weather.local.entities.CityEntity
 import com.msayeh.breeze.data.weather.local.entities.CityWithWeather
 import com.msayeh.breeze.data.weather.local.entities.CurrentWeatherEntity
@@ -17,6 +20,7 @@ class WeatherLocalDataSourceImpl @Inject constructor(
     private val weatherDao: WeatherDao,
     private val cityDao: CityDao,
     private val cityWeatherDao: CityWeatherDao,
+    private val cityAlertDao: CityAlertDao,
 ) : WeatherLocalDataSource {
     override fun observeAllCities(): Flow<List<CityEntity>> = cityDao.observeAllCities()
 
@@ -73,4 +77,13 @@ class WeatherLocalDataSourceImpl @Inject constructor(
     override fun observeAllCitiesWithWeather(): Flow<List<CityWithWeather>> =
         cityWeatherDao.observeAllCitiesWithWeather()
 
+    override fun observeAllAlerts(): Flow<List<AlertWithCity>> = cityAlertDao.observeAllCitiesWithAlerts()
+
+    override fun observeAllActiveAlerts(): Flow<List<AlertWithCity>> = cityAlertDao.observeActiveAlerts()
+
+    override suspend fun upsertAlert(alert: AlertEntity) = cityAlertDao.upsertAlert(alert)
+
+    override suspend fun updateAlertEnabled(alertId: Int, enabled: Boolean) = cityAlertDao.updateAlertEnabled(alertId, enabled)
+
+    override suspend fun deleteAlert(alertId: Int): Int = cityAlertDao.deleteAlert(alertId)
 }

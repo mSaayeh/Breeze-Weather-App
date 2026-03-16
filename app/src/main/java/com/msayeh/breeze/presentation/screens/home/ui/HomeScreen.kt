@@ -4,15 +4,10 @@ import android.Manifest
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.OverscrollEffect
-import androidx.compose.foundation.gestures.FlingBehavior
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,10 +34,9 @@ import com.msayeh.breeze.domain.model.WeatherCondition
 import com.msayeh.breeze.domain.model.Wind
 import com.msayeh.breeze.domain.model.getTodaySlots
 import com.msayeh.breeze.domain.model.groupByDay
-import com.msayeh.breeze.presentation.common.BottomBarSpacing
+import com.msayeh.breeze.presentation.common.navbar.BottomBarSpacing
 import com.msayeh.breeze.presentation.navigation.Route
 import com.msayeh.breeze.presentation.screens.home.ui.components.currentweather.CurrentWeatherHomeSection
-import com.msayeh.breeze.presentation.screens.home.ui.components.currentweather.UpdatingIndicator
 import com.msayeh.breeze.presentation.screens.home.ui.components.forecast.DailyForecastSection
 import com.msayeh.breeze.presentation.screens.home.ui.components.forecast.TodayForecastSection
 import com.msayeh.breeze.presentation.utils.LocationUtils
@@ -50,7 +44,6 @@ import com.msayeh.breeze.presentation.screens.home.viewmodel.HomeState
 import com.msayeh.breeze.presentation.screens.home.viewmodel.HomeViewModel
 import com.msayeh.breeze.presentation.utils.UnitPreferences
 import com.msayeh.breeze.presentation.utils.events.UiEventsHandler
-import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreen(

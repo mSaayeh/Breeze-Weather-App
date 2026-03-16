@@ -3,10 +3,15 @@ package com.msayeh.breeze.data.weather.mappers
 import androidx.annotation.DrawableRes
 import com.msayeh.breeze.R
 import com.msayeh.breeze.data.utils.Constants
+import com.msayeh.breeze.data.weather.local.entities.AlertEntity
+import com.msayeh.breeze.data.weather.local.entities.AlertWithCity
 import com.msayeh.breeze.data.weather.local.entities.CityEntity
 import com.msayeh.breeze.data.weather.local.entities.CityWithWeather
 import com.msayeh.breeze.data.weather.local.entities.CurrentWeatherEntity
 import com.msayeh.breeze.data.weather.local.entities.ForecastSlotEntity
+import com.msayeh.breeze.domain.model.Alert
+import com.msayeh.breeze.domain.model.AlertCityDetails
+import com.msayeh.breeze.domain.model.AlertType
 import com.msayeh.breeze.domain.model.City
 import com.msayeh.breeze.domain.model.CityWeatherDetails
 import com.msayeh.breeze.domain.model.Coordinates
@@ -75,4 +80,17 @@ fun CityWithWeather.toDomainModel() = CityWeatherDetails(
     city = city.toDomainModel(),
     currentWeather = currentWeather?.toDomainModel(),
     forecastSlots = forecastSlots.map { it.toDomainModel();  }
+)
+
+fun AlertEntity.toDomainModel() = Alert(
+    id = id,
+    cityId = cityId,
+    isEnabled = isEnabled,
+    alertTime = Instant.ofEpochSecond(alertTime).atZone(ZoneId.systemDefault()).toLocalTime(),
+    alertType = AlertType.fromCode(alertType),
+)
+
+fun AlertWithCity.toDomainModel() = AlertCityDetails(
+    city = city.toDomainModel(),
+    alert = alert.toDomainModel()
 )

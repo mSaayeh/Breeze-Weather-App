@@ -1,5 +1,7 @@
 package com.msayeh.breeze.data.weather.local.datasource
 
+import com.msayeh.breeze.data.weather.local.entities.AlertEntity
+import com.msayeh.breeze.data.weather.local.entities.AlertWithCity
 import com.msayeh.breeze.data.weather.local.entities.CityEntity
 import com.msayeh.breeze.data.weather.local.entities.CityWithWeather
 import com.msayeh.breeze.data.weather.local.entities.CurrentWeatherEntity
@@ -27,4 +29,10 @@ interface WeatherLocalDataSource {
 
     fun observeCityWithWeather(cityId: Int): Flow<CityWithWeather?>
     fun observeAllCitiesWithWeather(): Flow<List<CityWithWeather>>
+
+    fun observeAllAlerts(): Flow<List<AlertWithCity>>
+    fun observeAllActiveAlerts(): Flow<List<AlertWithCity>>
+    suspend fun upsertAlert(alert: AlertEntity)
+    suspend fun updateAlertEnabled(alertId: Int, enabled: Boolean)
+    suspend fun deleteAlert(alertId: Int): Int
 }
