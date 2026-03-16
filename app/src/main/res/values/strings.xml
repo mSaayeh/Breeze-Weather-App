@@ -5,7 +5,9 @@
     <string name="settings">Settings</string>
     <string name="no_internet_message">Can\'t Connect to the Network.</string>
     <string name="server_connection_error">Can\'t Connect to the Server. Please try again later.</string>
-    <string name="city_not_found_error">The city you are trying to get has been removed.</string>
+    <string name="invalid_city_error_title">Invalid Location</string>
+    <string name="invalid_city_error_body">This city has been removed, please choose another city.</string>
+    <string name="city_not_found_error">The location you are trying to get doesn\'t exist.</string>
     <string name="unknown_error">An Unknown error has occurred. Please try again later.</string>
     <string name="error_removing_city_error">An error occurred while trying to remove the city.</string>
     <string name="weather_refreshed_successfully">Weather refreshed successfully</string>
@@ -30,6 +32,7 @@
     <string name="manage_locations">Manage Locations</string>
     <string name="current_location">Current Location</string>
     <string name="location_added_successfully">Location added successfully</string>
+    <string name="current_location_updated">Current Location updated successfully</string>
     <string name="add_location">Add Location</string>
     <string name="search_location">Search Location</string>
     <string name="units">Units</string>
@@ -45,6 +48,8 @@
     <string name="theme">Theme</string>
     <string name="light">Light</string>
     <string name="dark">Dark</string>
+    <string name="city_deleted_successfully">City Deleted Successfully.</string>
+    <string name="please_enable_location_services">Please enable location services</string>
     <plurals name="added_locations">
         <item quantity="one">%d Added Location</item>
         <item quantity="other">%d Added Locations</item>

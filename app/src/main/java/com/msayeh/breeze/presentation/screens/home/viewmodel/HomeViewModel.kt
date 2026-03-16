@@ -2,9 +2,12 @@ package com.msayeh.breeze.presentation.screens.home.viewmodel
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.msayeh.breeze.R
+import com.msayeh.breeze.domain.exception.CityNotFoundException
+import com.msayeh.breeze.domain.model.City
 import com.msayeh.breeze.domain.model.Resource
 import com.msayeh.breeze.domain.model.Temperature
 import com.msayeh.breeze.domain.model.Wind
@@ -19,6 +22,7 @@ import com.msayeh.breeze.presentation.navigation.Route
 import com.msayeh.breeze.presentation.utils.UnitPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,7 +43,7 @@ class HomeViewModel @Inject constructor(
     private val prefRepository: PreferencesRepository,
     private val application: Application,
 ) : ViewModel() {
-    private var selectedCityId: StateFlow<Int?> = prefRepository.getChosenCityIdFlow()
+    val selectedCityId: StateFlow<Int?> = prefRepository.getChosenCityIdFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     private val selectedTempUnit: StateFlow<Temperature.Unit> = prefRepository.getTempUnitFlow()
@@ -59,24 +63,43 @@ class HomeViewModel @Inject constructor(
     )
 
     private var observationJob: Job? = null
+    private var permissionJob: Job? = null
+    private var eventsJob: Job? = null
+    private var checkCityJob: Job? = null
 
     private val _uiState = MutableStateFlow(HomeState())
     val uiState = _uiState.asStateFlow()
 
-    private val _uiEvent = MutableSharedFlow<UiEvent>()
+    private val _uiEvent = MutableSharedFlow<UiEvent>(
+        replay = 0,
+        extraBufferCapacity = 8,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
     val uiEvent = _uiEvent.asSharedFlow()
 
-    init {
-        viewModelScope.launch {
+    fun checkCityId() {
+        checkCityJob?.cancel()
+        checkCityJob = viewModelScope.launch {
             selectedCityId.collectLatest { cityId ->
+                Log.d("SelectedCity", "selected City ID: $cityId")
                 if (cityId != null) {
-                    _uiState.update { it.copy(isCitySelected = true) }
+                    _uiEvent.emit(UiEvent.HideDialog)
                     observeCityWithWeather()
                     refreshWeather(false)
                 } else {
-                    _uiState.update { it.copy(isCitySelected = false) }
+                    if (!LocationUtils.checkLocationPermission(application))
+                        showPermissionDeniedDialog()
+                    else
+                        onLocationPermissionResult(true)
                 }
             }
+        }
+    }
+
+    private fun emitEvent(event: UiEvent) {
+        eventsJob?.cancel()
+        eventsJob = viewModelScope.launch {
+            _uiEvent.emit(event)
         }
     }
 
@@ -86,13 +109,18 @@ class HomeViewModel @Inject constructor(
                 _uiState.update { it.copy(isLoading = true) }
 
                 when (val result = weatherRepository.refreshWithDebounce(cityId)) {
-                    is Resource.Error<Boolean> -> _uiEvent.emit(
-                        UiEvent.ShowSnackbar(
-                            application.getString(
-                                result.exception.messageResId
+                    is Resource.Error<Boolean> -> {
+                        if (result.exception is CityNotFoundException) {
+                            showInvalidCityDialog()
+                        } else
+                            _uiEvent.emit(
+                                UiEvent.ShowSnackbar(
+                                    application.getString(
+                                        result.exception.messageResId
+                                    )
+                                )
                             )
-                        )
-                    )
+                    }
 
                     is Resource.Success<Boolean> -> if (isPrompted) {
                         if (result.data) _uiEvent.emit(
@@ -147,19 +175,18 @@ class HomeViewModel @Inject constructor(
                 }
                 val cityResource =
                     weatherRepository.getCityByCoordinates(coordinates, isCurrentLocation = true)
-                if (cityResource is Resource.Success && cityResource.data != null) {
-                    val addedCityResource = weatherRepository.addCityToFavorites(cityResource.data)
-                    addedCityResource.fold(
-                        onSuccess = { data ->
-                            viewModelScope.launch {
-                                prefRepository.saveChosenCityId(data.id)
-                            }
-                        },
-                        onError = { exception ->
-                            exception.printStackTrace()
+                if (cityResource is Resource.Success) {
+                    when (val addedCityResource =
+                        weatherRepository.addCityToFavorites(cityResource.data)) {
+                        is Resource.Error<*> -> {
+                            addedCityResource.exception.printStackTrace()
                             showErrorGettingLocationDialog()
                         }
-                    )
+
+                        is Resource.Success<City> -> prefRepository.saveChosenCityId(
+                            addedCityResource.data.id
+                        )
+                    }
                 } else {
                     (cityResource as Resource.Error<*>).exception.printStackTrace()
                     showErrorGettingLocationDialog()
@@ -170,62 +197,94 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun showErrorGettingLocationDialog() {
-        viewModelScope.launch {
-            _uiEvent.emit(
-                UiEvent.ShowDialog(
-                    BreezeDialogData.Builder(
-                        application.getString(R.string.error_getting_current_location),
-                        application.getString(R.string.select_city_manually),
-                        positiveButton = DialogButton(
-                            application.getString(R.string.choose_manually_instead),
-                            onClick = {
-                                viewModelScope.launch {
-                                    _uiEvent.emit(UiEvent.NavigateTo(Route.Cities))
-                                    hideDialog()
-                                }
+    private suspend fun showErrorGettingLocationDialog() {
+        Log.d("DialogContainer", "ViewModel: Showing error dialog")
+        _uiEvent.emit(
+            UiEvent.ShowDialog(
+                BreezeDialogData.Builder(
+                    application.getString(R.string.error_getting_current_location),
+                    application.getString(R.string.select_city_manually),
+                    positiveButton = DialogButton(
+                        application.getString(R.string.choose_manually_instead),
+                        onClick = {
+                            viewModelScope.launch {
+                                hideDialog()
+                                _uiEvent.emit(UiEvent.NavigateTo(Route.Cities))
                             }
-                        )
-                    ).dismissable(false).build()
-                )
+                        }
+                    )
+                ).dismissable(false).build()
             )
+        )
+    }
+
+    private suspend fun showInvalidCityDialog() {
+        _uiEvent.emit(
+            UiEvent.ShowDialog(
+                BreezeDialogData.Builder(
+                    application.getString(R.string.invalid_city_error_title),
+                    application.getString(R.string.invalid_city_error_body),
+                    positiveButton = DialogButton(
+                        application.getString(R.string.choose_manually_instead),
+                        onClick = {
+                            viewModelScope.launch {
+                                hideDialog()
+                                _uiEvent.emit(UiEvent.NavigateTo(Route.Cities))
+                            }
+                        }
+                    )
+                ).dismissable(false).build()
+            )
+        )
+    }
+
+    private suspend fun showPermissionDeniedDialog() {
+        Log.d("DialogContainer", "ViewModel: Showing permission dialog")
+        _uiEvent.emit(
+            UiEvent.ShowDialog(
+                BreezeDialogData.Builder(
+                    application.getString(R.string.location_permission_denied),
+                    application.getString(R.string.enable_location_or_choose_city),
+                    positiveButton = DialogButton(
+                        text = application.getString(R.string.enable_location),
+                        onClick = {
+                            onEnableLocationClicked()
+                        },
+                    ),
+                ).negativeButton(
+                    DialogButton(
+                        text = application.getString(R.string.choose_city),
+                        onClick = {
+                            onChooseCityClicked()
+                        },
+                        type = DialogButtonType.ELEVATED
+                    )
+                )
+                    .dismissable(false).build()
+            )
+        )
+    }
+
+    fun onEnableLocationClicked() {
+        if (permissionJob?.isActive == true) return
+        permissionJob = viewModelScope.launch {
+            emitEvent(UiEvent.HideDialog)
+            emitEvent(UiEvent.OpenAppSettings(application.getString(R.string.enable_location_permission)))
+            while (true) {
+                delay(1000)
+                if (LocationUtils.checkLocationPermission(application)) {
+                    onLocationPermissionResult(true)
+                    break
+                }
+            }
         }
     }
 
-    private fun showPermissionDeniedDialog() {
+    fun onChooseCityClicked() {
         viewModelScope.launch {
-            _uiEvent.emit(
-                UiEvent.ShowDialog(
-                    BreezeDialogData.Builder(
-                        application.getString(R.string.location_permission_denied),
-                        application.getString(R.string.enable_location_or_choose_city),
-                        positiveButton = DialogButton(
-                            text = application.getString(R.string.enable_location),
-                            onClick = {
-                                viewModelScope.launch {
-                                    _uiEvent.emit(UiEvent.OpenAppSettings(application.getString(R.string.enable_location_permission)))
-                                    while (true) {
-                                        delay(1000)
-                                        if (LocationUtils.checkLocationPermission(application)) {
-                                            hideDialog()
-                                        }
-                                    }
-                                }
-                            },
-                        ),
-                    ).negativeButton(
-                        DialogButton(
-                            text = application.getString(R.string.choose_city),
-                            onClick = {
-                                // TODO: Navigate to city selection screen
-                                hideDialog()
-                            },
-                            type = DialogButtonType.ELEVATED
-                        )
-                    )
-                        .dismissable(false).build()
-                )
-            )
+            emitEvent(UiEvent.HideDialog)
+            delay(50)
+            emitEvent(UiEvent.NavigateTo(Route.Cities))
         }
     }
 }

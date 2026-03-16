@@ -3,6 +3,7 @@ package com.msayeh.breeze.presentation.utils.events
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,18 +16,22 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun UiEventsHandler(uiEventStateFlow: SharedFlow<UiEvent>, handleNavigation: ((Route) -> Unit)? = null, navigateBack: (() -> Unit)? = null) {
+fun UiEventsHandler(uiEventSharedFlow: SharedFlow<UiEvent>, handleNavigation: ((Route) -> Unit)? = null, navigateBack: (() -> Unit)? = null) {
     val snackbarHost = LocalSnackbarHost.current
     val dialogState = LocalDialogState.current
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
-    LaunchedEffect(Unit) {
-        uiEventStateFlow.collectLatest { event ->
+    LaunchedEffect(uiEventSharedFlow) {
+        uiEventSharedFlow.collect { event ->
             when (event) {
                 is UiEvent.NavigateTo -> handleNavigation?.invoke(event.route) ?: throw IllegalArgumentException("No navigation handler provided")
                 is UiEvent.ShowSnackbar -> snackbarHost.showSnackbar(event.message)
-                is UiEvent.ShowDialog -> dialogState.showDialog(event.dialog)
+                is UiEvent.ShowDialog -> {
+                    Log.d("DialogContainer", "ShowDialog: ${event.dialog}")
+                    dialogState.showDialog(event.dialog)
+                }
+                is UiEvent.HideDialog -> dialogState.hideDialog()
                 is UiEvent.OpenAppSettings -> {
                     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                         data = Uri.fromParts("package", context.packageName, null)

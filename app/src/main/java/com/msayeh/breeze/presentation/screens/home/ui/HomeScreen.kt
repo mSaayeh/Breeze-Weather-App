@@ -1,6 +1,7 @@
 package com.msayeh.breeze.presentation.screens.home.ui
 
 import android.Manifest
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.OverscrollEffect
@@ -25,7 +26,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.compose.rememberLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import com.msayeh.breeze.domain.model.City
 import com.msayeh.breeze.domain.model.CityWeatherDetails
 import com.msayeh.breeze.domain.model.Coordinates
@@ -46,6 +50,7 @@ import com.msayeh.breeze.presentation.screens.home.viewmodel.HomeState
 import com.msayeh.breeze.presentation.screens.home.viewmodel.HomeViewModel
 import com.msayeh.breeze.presentation.utils.UnitPreferences
 import com.msayeh.breeze.presentation.utils.events.UiEventsHandler
+import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreen(
@@ -55,7 +60,9 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val unitPreferences by viewModel.unitPreferences.collectAsStateWithLifecycle()
+    val selectedCityId by viewModel.selectedCityId.collectAsStateWithLifecycle()
     val app = LocalContext.current.applicationContext
+    val lifecycleOwner = rememberLifecycleOwner()
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -68,14 +75,21 @@ fun HomeScreen(
 
     UiEventsHandler(viewModel.uiEvent, navigateToRoute)
 
-    LaunchedEffect(uiState.isCitySelected) {
-        if (uiState.isCitySelected.not() && LocationUtils.checkLocationPermission(app).not()) {
+    LaunchedEffect(selectedCityId) {
+        if ((selectedCityId == null || selectedCityId == -1) && LocationUtils.checkLocationPermission(app).not()) {
             permissionLauncher.launch(
                 arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 )
             )
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            Log.d("SelectedCity", "Resumed")
+            viewModel.checkCityId()
         }
     }
 
@@ -156,7 +170,7 @@ private fun HomeContentPreview() {
                     fetchedAt = 1518917,
                 ), forecastSlots = emptyList()
             ),
-            isLoading = true, isCitySelected = false,
+            isLoading = true,
         ),
         UnitPreferences(
             Temperature.Unit.CELSIUS,

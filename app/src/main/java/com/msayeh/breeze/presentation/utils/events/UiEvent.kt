@@ -7,6 +7,7 @@ sealed class UiEvent {
     data class ShowSnackbar(val message: String) : UiEvent()
     data class NavigateTo(val route: Route) : UiEvent()
     data class ShowDialog(val dialog: BreezeDialogData) : UiEvent()
+    object HideDialog : UiEvent()
     data class OpenAppSettings(val toastMessage: String) : UiEvent()
     object NavigateBack : UiEvent()
     object RemoveFocus : UiEvent()

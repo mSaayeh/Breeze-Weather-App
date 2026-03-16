@@ -23,6 +23,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.core.os.LocaleListCompat
@@ -71,7 +72,7 @@ class MainActivity : ComponentActivity() {
 }
 
 val LocalSnackbarHost = staticCompositionLocalOf { SnackbarHostState() }
-val LocalDialogState = compositionLocalOf { BreezeDialogState() }
+val LocalDialogState = staticCompositionLocalOf { BreezeDialogState() }
 
 fun shouldShowBottomBar(currentBackStackEntry: NavBackStackEntry?): Boolean {
     val currentRoute = currentBackStackEntry?.destination?.route
@@ -97,8 +98,8 @@ fun App(isDarkTheme: Boolean?, appLanguage: AppLanguage?) {
         val currentBackStackEntry by navController.currentBackStackEntryAsState()
 
         CompositionLocalProvider(
-            LocalSnackbarHost provides SnackbarHostState(),
-            LocalDialogState provides BreezeDialogState()
+            LocalSnackbarHost provides remember { SnackbarHostState() },
+            LocalDialogState provides remember { BreezeDialogState() }
         ) {
             BreezeDialogContainer(LocalDialogState.current) {
                 Scaffold(

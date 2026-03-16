@@ -1,5 +1,6 @@
 package com.msayeh.breeze.presentation.common.dialog
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.spring
@@ -30,6 +31,7 @@ fun BreezeDialogContainer(
         dialogState.hideDialog()
     }
 
+    Log.d("DialogContainer", "isShowingDialog: $isShowingDialog, dialogData: $dialogData, dialogState = ${dialogState.hashCode()}")
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         content()
         AnimatedVisibility(

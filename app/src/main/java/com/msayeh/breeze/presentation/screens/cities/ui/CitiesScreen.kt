@@ -1,24 +1,29 @@
 package com.msayeh.breeze.presentation.screens.cities.ui
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.LocationSearching
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -48,8 +53,21 @@ fun CitiesScreen(
         onSuccess = { cities ->
             Scaffold(
                 floatingActionButton = {
-                    FloatingActionButton(onClick = viewModel::onAddCityClicked) {
-                        Icon(Icons.Default.Add, contentDescription = "Add")
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        SmallFloatingActionButton(
+                            onClick = viewModel::onUpdateCurrentLocationClicked,
+                            containerColor = MaterialTheme.colorScheme.inversePrimary
+                        ) {
+                            Icon(
+                                Icons.Default.LocationSearching,
+                                contentDescription = "Current Location",
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        FloatingActionButton(onClick = viewModel::onAddCityClicked) {
+                            Icon(Icons.Default.Add, contentDescription = "Add")
+                        }
                     }
                 },
                 topBar = {
@@ -91,6 +109,7 @@ fun CitiesScreen(
                                     navigateUp()
                                 },
                                 isSelected = currentLocation.id == selectedCityId,
+                                onDelete = null,
                                 modifier = Modifier.padding(vertical = 8.dp)
                             )
                         }
@@ -112,6 +131,9 @@ fun CitiesScreen(
                                 onCityClicked = {
                                     viewModel.onCityClicked(it.id)
                                     navigateUp()
+                                },
+                                onDelete = {
+                                    viewModel.onCityDeleted(it.id)
                                 },
                                 isSelected = it.id == selectedCityId,
                             )
