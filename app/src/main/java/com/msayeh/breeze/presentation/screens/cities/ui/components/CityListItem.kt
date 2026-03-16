@@ -1,5 +1,6 @@
 package com.msayeh.breeze.presentation.screens.cities.ui.components
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -22,7 +23,7 @@ import com.msayeh.breeze.R
 import com.msayeh.breeze.domain.model.City
 
 @Composable
-fun CityListItem(city: City, onCityClicked: () -> Unit, modifier: Modifier = Modifier) {
+fun CityListItem(city: City, onCityClicked: () -> Unit, isSelected: Boolean, modifier: Modifier = Modifier) {
     ListItem(
         headlineContent = {
             Text(
@@ -49,6 +50,7 @@ fun CityListItem(city: City, onCityClicked: () -> Unit, modifier: Modifier = Mod
                 RoundedCornerShape(12.dp),
                 Shadow(0.5.dp, spread = 0.5.dp, alpha = 0.05f, offset = DpOffset(2.dp, 2.dp))
             )
+            .border(if (isSelected) 2.dp else 0.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(12.dp))
             .clip(RoundedCornerShape(12.dp))
             .clickable(onClick = onCityClicked),
     )

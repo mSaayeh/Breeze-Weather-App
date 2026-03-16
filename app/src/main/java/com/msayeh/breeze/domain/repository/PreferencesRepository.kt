@@ -14,8 +14,8 @@ interface PreferencesRepository {
     fun isDarkThemeEnabledFlow(): Flow<Boolean?>
     suspend fun saveDarkTheme(isDarkThemeEnabled: Boolean)
 
-    fun getLanguageFlow(): Flow<AppLanguage?>
-    suspend fun getLanguage(): AppLanguage?
+    fun getLanguageFlow(): Flow<AppLanguage>
+    suspend fun getLanguage(): AppLanguage
     suspend fun saveLanguage(appLanguage: AppLanguage)
 
     fun getTempUnitFlow(): Flow<Temperature.Unit>

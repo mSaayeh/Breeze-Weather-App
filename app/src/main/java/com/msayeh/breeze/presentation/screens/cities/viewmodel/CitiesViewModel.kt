@@ -35,6 +35,9 @@ class CitiesViewModel @Inject constructor(
     private val cities = weatherRepository.observeAllCities()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    val selectedCityId = prefRepository.getChosenCityIdFlow()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
     val uiState = combine(_uiState, cities) { state, cities ->
         if (state is UiState.Success) {
             state.copy(data = cities)

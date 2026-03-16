@@ -41,7 +41,7 @@ import com.msayeh.breeze.presentation.screens.addcity.ui.AddCityScreen
 import com.msayeh.breeze.presentation.screens.alerts.AlertsScreen
 import com.msayeh.breeze.presentation.screens.cities.ui.CitiesScreen
 import com.msayeh.breeze.presentation.screens.home.ui.HomeScreen
-import com.msayeh.breeze.presentation.screens.settings.SettingsScreen
+import com.msayeh.breeze.presentation.screens.settings.ui.SettingsScreen
 import com.msayeh.breeze.presentation.theme.BreezeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -124,7 +124,7 @@ fun App(isDarkTheme: Boolean?, appLanguage: AppLanguage?) {
                             HomeScreen(navigateToRouteLambda)
                         }
                         composable<Route.Settings> {
-                            SettingsScreen(navigateToRouteLambda)
+                            SettingsScreen()
                         }
                         composable<Route.Alerts> {
                             AlertsScreen(navigateToRouteLambda)

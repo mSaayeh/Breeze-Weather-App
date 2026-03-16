@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.flow.map
+import java.util.Locale
 import javax.inject.Inject
 
 class PreferencesRepositoryImpl @Inject constructor(
@@ -33,14 +34,13 @@ class PreferencesRepositoryImpl @Inject constructor(
     override suspend fun saveDarkTheme(isDarkThemeEnabled: Boolean) =
         preferencesDataSource.saveIsDarkTheme(isDarkThemeEnabled)
 
-    override fun getLanguageFlow(): Flow<AppLanguage?> = preferencesDataSource.languageFlow().map {
-        if (it == null) return@map null
-        AppLanguage.fromCode(it)
+    override fun getLanguageFlow(): Flow<AppLanguage> = preferencesDataSource.languageFlow().map {
+        AppLanguage.fromCode(it ?: Locale.getDefault().language)
     }
 
-    override suspend fun getLanguage(): AppLanguage? {
-        val languageCode = preferencesDataSource.languageFlow().firstOrNull() ?: return null
-        val language = AppLanguage.fromCode(languageCode)
+    override suspend fun getLanguage(): AppLanguage {
+        val languageCode = preferencesDataSource.languageFlow().firstOrNull()
+        val language = AppLanguage.fromCode(languageCode ?: Locale.getDefault().language)
         return language
     }
 

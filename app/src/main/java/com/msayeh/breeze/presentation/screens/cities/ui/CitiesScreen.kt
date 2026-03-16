@@ -40,6 +40,7 @@ fun CitiesScreen(
     viewModel: CitiesViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val selectedCityId by viewModel.selectedCityId.collectAsStateWithLifecycle()
 
     UiEventsHandler(viewModel.uiEvent, navigateToRoute, navigateUp)
 
@@ -89,6 +90,7 @@ fun CitiesScreen(
                                     viewModel.onCityClicked(currentLocation.id)
                                     navigateUp()
                                 },
+                                isSelected = currentLocation.id == selectedCityId,
                                 modifier = Modifier.padding(vertical = 8.dp)
                             )
                         }
@@ -111,6 +113,7 @@ fun CitiesScreen(
                                     viewModel.onCityClicked(it.id)
                                     navigateUp()
                                 },
+                                isSelected = it.id == selectedCityId,
                             )
                             Spacer(modifier = Modifier.padding(bottom = 8.dp))
                         }

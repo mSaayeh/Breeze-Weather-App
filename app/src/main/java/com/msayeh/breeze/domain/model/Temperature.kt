@@ -1,5 +1,8 @@
 package com.msayeh.breeze.domain.model
 
+import androidx.annotation.StringRes
+import com.msayeh.breeze.R
+
 data class Temperature(
     val celsius: Double,
 ) {
@@ -8,8 +11,8 @@ data class Temperature(
     val kelvin: Double
         get() = celsius + 273.15
 
-    enum class Unit(val code: Int, val symbol: String) {
-        CELSIUS(1001, "°"), FAHRENHEIT(1002, "°"), KELVIN(1003, "");
+    enum class Unit(val code: Int, val symbol: String, @param:StringRes val nameResId: Int) {
+        CELSIUS(1001, "°", R.string.celsius), FAHRENHEIT(1002, "°", R.string.fahrenheit), KELVIN(1003, "", R.string.kelvin);
 
         companion object {
             fun fromCode(code: Int): Unit = entries.first { it.code == code }
