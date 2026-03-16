@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import com.msayeh.breeze.presentation.activity.LocalDialogState
 import com.msayeh.breeze.presentation.activity.LocalSnackbarHost
 import com.msayeh.breeze.presentation.navigation.Route
@@ -18,6 +19,7 @@ fun UiEventsHandler(uiEventStateFlow: SharedFlow<UiEvent>, handleNavigation: ((R
     val snackbarHost = LocalSnackbarHost.current
     val dialogState = LocalDialogState.current
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(Unit) {
         uiEventStateFlow.collectLatest { event ->
@@ -34,6 +36,9 @@ fun UiEventsHandler(uiEventStateFlow: SharedFlow<UiEvent>, handleNavigation: ((R
                 }
                 is UiEvent.NavigateBack -> {
                     navigateBack?.invoke() ?: throw IllegalArgumentException("No Navigate back handler provided")
+                }
+                is UiEvent.RemoveFocus -> {
+                    focusManager.clearFocus()
                 }
             }
         }

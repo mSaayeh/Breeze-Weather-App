@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.ksp)
     kotlin("plugin.serialization") version "1.9.23"
     alias(libs.plugins.dagger.hilt)
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 val localProperties = Properties().apply {
@@ -49,6 +50,11 @@ android {
             "String",
             "API_KEY",
             "\"${localProperties["API_KEY"]}\""
+        )
+        buildConfigField(
+            "String",
+            "MAPS_API_KEY",
+            "\"${localProperties["MAPS_API_KEY"]}\""
         )
     }
     buildFeatures {
@@ -144,6 +150,7 @@ dependencies {
 dependencies {
     implementation(libs.play.services.location)
     implementation(libs.kotlinx.coroutines.play.services)
+    implementation(libs.maps.compose)
 }
 
 // Data Store

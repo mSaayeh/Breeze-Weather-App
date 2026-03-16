@@ -33,7 +33,7 @@ fun CityListItem(city: City, onCityClicked: () -> Unit, modifier: Modifier = Mod
         },
         supportingContent = {
             Text(
-                "${city.country}${if (city.isCurrentLocation) " (${stringResource(R.string.current_location)})" else ""}",
+                city.country,
                 style = MaterialTheme.typography.bodyMedium
             )
         },

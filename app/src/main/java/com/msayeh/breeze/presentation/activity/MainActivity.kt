@@ -37,7 +37,7 @@ import com.msayeh.breeze.presentation.common.MainBottomBar
 import com.msayeh.breeze.presentation.common.dialog.BreezeDialogContainer
 import com.msayeh.breeze.presentation.common.dialog.BreezeDialogState
 import com.msayeh.breeze.presentation.navigation.Route
-import com.msayeh.breeze.presentation.screens.addcity.AddCityScreen
+import com.msayeh.breeze.presentation.screens.addcity.ui.AddCityScreen
 import com.msayeh.breeze.presentation.screens.alerts.AlertsScreen
 import com.msayeh.breeze.presentation.screens.cities.ui.CitiesScreen
 import com.msayeh.breeze.presentation.screens.home.ui.HomeScreen

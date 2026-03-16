@@ -45,7 +45,7 @@ class WeatherRepositoryImpl @Inject constructor(
     override suspend fun getCityByCoordinates(
         coordinates: Coordinates,
         isCurrentLocation: Boolean
-    ): Resource<City?> = tryResourceSuspend {
+    ): Resource<City> = tryResourceSuspend {
         remoteDataSource.getGeoCityByCoordinates(
             coordinates.latitude,
             coordinates.longitude

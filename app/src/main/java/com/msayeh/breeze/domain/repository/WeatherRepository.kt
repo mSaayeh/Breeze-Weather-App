@@ -13,7 +13,7 @@ interface WeatherRepository {
     fun observeCityWithWeather(cityId: Int): Flow<CityWeatherDetails?>
     fun observeAllCitiesWithWeather(): Flow<List<CityWeatherDetails>>
     suspend fun getCitySuggestions(query: String): Resource<List<City>>
-    suspend fun getCityByCoordinates(coordinates: Coordinates, isCurrentLocation: Boolean = false): Resource<City?>
+    suspend fun getCityByCoordinates(coordinates: Coordinates, isCurrentLocation: Boolean = false): Resource<City>
     suspend fun addCityToFavorites(city: City): Resource<City>
     suspend fun removeCityFromFavorites(cityId: Int): Resource<Unit>
     suspend fun refreshWeather(cityId: Int): Resource<Unit>
