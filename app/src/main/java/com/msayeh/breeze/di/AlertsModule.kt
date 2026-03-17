@@ -7,7 +7,6 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationManagerCompat
 import com.msayeh.breeze.R
 import com.msayeh.breeze.presentation.alerts.utils.NotificationUtils
@@ -44,7 +43,7 @@ object AlertsModule {
     private fun createNotificationChannels(context: Context) {
         val notificationChannel = NotificationChannel(
             NotificationUtils.NOTIFICATION_CHANNEL_ID,
-            context.getString(R.string.weather_notifications),
+            context.getString(R.string.notification),
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
             lockscreenVisibility = Notification.VISIBILITY_PUBLIC
@@ -52,7 +51,7 @@ object AlertsModule {
 
         val alarmChannel = NotificationChannel(
             NotificationUtils.ALARM_CHANNEL_ID,
-            context.getString(R.string.weather_alarms),
+            context.getString(R.string.alarm),
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
             lockscreenVisibility = Notification.VISIBILITY_PUBLIC

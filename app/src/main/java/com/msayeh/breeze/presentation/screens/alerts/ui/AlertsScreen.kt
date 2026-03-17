@@ -73,7 +73,7 @@ fun AlertsScreen(
                 .padding(16.dp),
             floatingActionButton = {
                 FloatingActionButton(
-                    onClick = viewModel::addSampleAlert,
+                    onClick = viewModel::onAddAlertClicked,
                     modifier = Modifier
                         .systemBarsPadding()
                         .padding(bottom = 64.dp)

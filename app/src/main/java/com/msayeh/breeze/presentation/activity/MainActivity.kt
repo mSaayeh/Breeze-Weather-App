@@ -37,6 +37,7 @@ import com.msayeh.breeze.presentation.common.navbar.MainBottomBar
 import com.msayeh.breeze.presentation.common.dialog.BreezeDialogContainer
 import com.msayeh.breeze.presentation.common.dialog.BreezeDialogState
 import com.msayeh.breeze.presentation.navigation.Route
+import com.msayeh.breeze.presentation.screens.addalerts.ui.AddAlertScreen
 import com.msayeh.breeze.presentation.screens.addcity.ui.AddCityScreen
 import com.msayeh.breeze.presentation.screens.alerts.ui.AlertsScreen
 import com.msayeh.breeze.presentation.screens.cities.ui.CitiesScreen
@@ -138,6 +139,12 @@ fun App(isDarkTheme: Boolean?, appLanguage: AppLanguage?) {
                         }
                         composable<Route.AddCity> {
                             AddCityScreen(navController::navigateUp)
+                        }
+                        composable<Route.AddAlert> {
+                            AddAlertScreen(
+                                navigateUp = navController::navigateUp,
+                                navigateToRoute = navigateToRouteLambda,
+                            )
                         }
                     }
                 }
