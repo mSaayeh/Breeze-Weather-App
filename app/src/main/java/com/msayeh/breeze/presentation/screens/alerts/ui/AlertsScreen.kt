@@ -26,9 +26,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.msayeh.breeze.R
 import com.msayeh.breeze.presentation.common.navbar.BottomBarSpacing
 import com.msayeh.breeze.presentation.navigation.Route
 import com.msayeh.breeze.presentation.screens.alerts.ui.components.AlertItem
@@ -87,7 +89,7 @@ fun AlertsScreen(
                     .fillMaxSize()
                     .padding(padding),
             ) {
-                Text(text = "Weather Alerts", style = MaterialTheme.typography.headlineLarge)
+                Text(text = stringResource(R.string.weather_alerts), style = MaterialTheme.typography.headlineLarge)
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyColumn(
                     contentPadding = PaddingValues(vertical = 8.dp),

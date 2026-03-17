@@ -2,10 +2,10 @@ package com.msayeh.breeze.presentation.activity
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -47,7 +47,7 @@ import com.msayeh.breeze.presentation.theme.BreezeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,13 +57,11 @@ class MainActivity : ComponentActivity() {
             val isDarkTheme by viewModel.isDarkMode.collectAsStateWithLifecycle()
             val appLanguage by viewModel.selectedLanguage.collectAsStateWithLifecycle()
 
-            LaunchedEffect(appLanguage) {
-                appLanguage?.let {
-                    AppCompatDelegate.setApplicationLocales(
-                        LocaleListCompat.forLanguageTags(
-                            it.code
-                        )
-                    )
+            LaunchedEffect(appLanguage?.code) {
+                val languageCode = appLanguage?.code ?: return@LaunchedEffect
+                val requestedLocales = LocaleListCompat.forLanguageTags(languageCode)
+                if (AppCompatDelegate.getApplicationLocales() != requestedLocales) {
+                    AppCompatDelegate.setApplicationLocales(requestedLocales)
                 }
             }
             App(isDarkTheme, appLanguage)

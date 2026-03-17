@@ -43,7 +43,7 @@ object AlertsModule {
     private fun createNotificationChannels(context: Context) {
         val notificationChannel = NotificationChannel(
             NotificationUtils.NOTIFICATION_CHANNEL_ID,
-            context.getString(R.string.notification),
+            context.getString(R.string.weather_notifications),
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
             lockscreenVisibility = Notification.VISIBILITY_PUBLIC
@@ -51,7 +51,7 @@ object AlertsModule {
 
         val alarmChannel = NotificationChannel(
             NotificationUtils.ALARM_CHANNEL_ID,
-            context.getString(R.string.alarm),
+            context.getString(R.string.weather_alarms),
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
             lockscreenVisibility = Notification.VISIBILITY_PUBLIC

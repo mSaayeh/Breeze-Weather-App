@@ -14,3 +14,16 @@ object LightColors {
     val OnError = Color(0xFFFFFFFF)
     val Tertiary = Color(0xFFFAEF16)
 }
+
+object DarkColors {
+    val Primary = Color(0xFF3EC0FF)
+    val PrimaryVariant = Color(0xFF4D94FF)
+    val Background = Color(0xFF121212)
+    val Surface = Color(0xFF1E1E1E)
+    val OnSurface = Color(0xFFF0F0F0)
+    val OnPrimary = Color(0xFF0A0A0A)
+    val OnBackground = Color(0xFFF0F0F0)
+    val Error = Color(0xFFFF5C72)
+    val OnError = Color(0xFF0A0A0A)
+    val Tertiary = Color(0xFFF5E900)
+}

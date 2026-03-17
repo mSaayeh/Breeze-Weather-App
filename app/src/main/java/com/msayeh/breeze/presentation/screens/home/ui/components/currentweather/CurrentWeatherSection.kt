@@ -82,11 +82,9 @@ fun CurrentWeatherHomeSection(
             currentWeather?.condition?.title,
         )
         Text(
-            if (currentWeather?.feelsLike != null) "Feels Like: ${
-                currentWeather.feelsLike.format(
-                    unitPreferences.tempUnit
-                )
-            }" else "",
+            if (currentWeather?.feelsLike != null) stringResource(R.string.feels_like) + currentWeather.feelsLike.format(
+                unitPreferences.tempUnit
+            ) else "",
             style = MaterialTheme.typography.bodyMedium.copy(
                 color = MaterialTheme.colorScheme.onPrimary, fontSize = 16.sp
             )

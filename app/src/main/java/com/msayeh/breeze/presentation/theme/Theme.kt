@@ -11,15 +11,18 @@ import androidx.compose.ui.platform.LocalConfiguration
 import com.msayeh.breeze.data.utils.AppLanguage
 
 internal val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFF224256),
-    inversePrimary = Color(0xFF032331),
-    background = Color(0xFF111111),
-    primaryContainer = Color(0xFF224256),
-    onPrimaryContainer = Color(0xFF032331),
-    surface = LightColors.Surface,
-    onPrimary = LightColors.OnPrimary,
-    onSurface = LightColors.OnSurface,
-    onBackground = LightColors.OnBackground
+    primary = DarkColors.Primary,
+    inversePrimary = DarkColors.PrimaryVariant,
+    primaryContainer = DarkColors.Primary,
+    onPrimaryContainer = DarkColors.OnPrimary,
+    background = DarkColors.Background,
+    surface = DarkColors.Surface,
+    onPrimary = DarkColors.OnPrimary,
+    onSurface = DarkColors.OnSurface,
+    onBackground = DarkColors.OnBackground,
+    tertiary = DarkColors.Tertiary,
+    error = DarkColors.Error,
+    onError = DarkColors.OnError,
 )
 
 internal val LightColorScheme = lightColorScheme(
