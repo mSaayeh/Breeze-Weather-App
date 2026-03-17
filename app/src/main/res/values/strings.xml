@@ -8,6 +8,7 @@
     <string name="invalid_city_error_title">Invalid Location</string>
     <string name="invalid_city_error_body">This city has been removed, please choose another city.</string>
     <string name="city_not_found_error">The location you are trying to get doesn\'t exist.</string>
+    <string name="alarm_not_found_error">The alarm you are trying to get doesn\'t exist.</string>
     <string name="unknown_error">An Unknown error has occurred. Please try again later.</string>
     <string name="error_removing_city_error">An error occurred while trying to remove the city.</string>
     <string name="weather_refreshed_successfully">Weather refreshed successfully</string>
@@ -50,6 +51,10 @@
     <string name="dark">Dark</string>
     <string name="city_deleted_successfully">City Deleted Successfully.</string>
     <string name="please_enable_location_services">Please enable location services</string>
+    <string name="weather_notifications">Weather Notifications</string>
+    <string name="weather_alarms">Weather Alarms</string>
+    <string name="alarm_service">Alarm Service</string>
+    <string name="dismiss">Dismiss</string>
     <plurals name="added_locations">
         <item quantity="one">%d Added Location</item>
         <item quantity="other">%d Added Locations</item>

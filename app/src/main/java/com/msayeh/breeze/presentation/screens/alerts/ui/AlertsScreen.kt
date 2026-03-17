@@ -1,5 +1,9 @@
 package com.msayeh.breeze.presentation.screens.alerts.ui
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -28,6 +33,7 @@ import com.msayeh.breeze.presentation.common.navbar.BottomBarSpacing
 import com.msayeh.breeze.presentation.navigation.Route
 import com.msayeh.breeze.presentation.screens.alerts.ui.components.AlertItem
 import com.msayeh.breeze.presentation.screens.alerts.viewmodel.AlertsViewModel
+import com.msayeh.breeze.presentation.utils.LocationUtils
 import com.msayeh.breeze.presentation.utils.events.UiEventsHandler
 import java.time.format.DateTimeFormatter
 
@@ -38,6 +44,25 @@ fun AlertsScreen(
     viewModel: AlertsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val granted =
+                permissions[Manifest.permission.POST_NOTIFICATIONS] == true
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.POST_NOTIFICATIONS
+                )
+            )
+        }
+    }
 
     UiEventsHandler(viewModel.uiEvent, navigateToRoute)
 

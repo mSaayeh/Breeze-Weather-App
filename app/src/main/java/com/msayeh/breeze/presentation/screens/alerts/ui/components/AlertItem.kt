@@ -5,7 +5,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
@@ -66,7 +65,7 @@ fun AlertItem(
                 },
                 trailingContent = {
                     Text(
-                        alertCityDetails.alert.alertTime.format(DateTimeFormatter.ofPattern("h:mm a")),
+                        alertCityDetails.alert.time.format(DateTimeFormatter.ofPattern("h:mm a")),
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }

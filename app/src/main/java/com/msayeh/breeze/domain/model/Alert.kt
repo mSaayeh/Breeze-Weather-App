@@ -6,8 +6,8 @@ data class Alert(
     val id: Int = 0,
     val cityId: Int,
     val isEnabled: Boolean,
-    val alertTime: LocalTime,
-    val alertType: AlertType,
+    val time: LocalTime,
+    val type: AlertType,
 )
 
 enum class AlertType(val code: Int) {

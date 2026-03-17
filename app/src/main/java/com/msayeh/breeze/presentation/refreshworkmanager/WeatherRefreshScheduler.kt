@@ -1,6 +1,5 @@
-package com.msayeh.breeze.presentation.workmanager
+package com.msayeh.breeze.presentation.refreshworkmanager
 
-import android.util.Log
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy

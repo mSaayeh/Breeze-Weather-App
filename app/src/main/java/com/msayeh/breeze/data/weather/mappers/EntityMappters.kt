@@ -1,8 +1,5 @@
 package com.msayeh.breeze.data.weather.mappers
 
-import androidx.annotation.DrawableRes
-import com.msayeh.breeze.R
-import com.msayeh.breeze.data.utils.Constants
 import com.msayeh.breeze.data.weather.local.entities.AlertEntity
 import com.msayeh.breeze.data.weather.local.entities.AlertWithCity
 import com.msayeh.breeze.data.weather.local.entities.CityEntity
@@ -22,10 +19,7 @@ import com.msayeh.breeze.domain.model.Weather
 import com.msayeh.breeze.domain.model.WeatherCondition
 import com.msayeh.breeze.domain.model.Wind
 import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.ZoneId
-import kotlin.time.Duration.Companion.seconds
 
 fun CityEntity.toDomainModel() = City(
     id = id,
@@ -86,8 +80,8 @@ fun AlertEntity.toDomainModel() = Alert(
     id = id,
     cityId = cityId,
     isEnabled = isEnabled,
-    alertTime = Instant.ofEpochSecond(alertTime).atZone(ZoneId.systemDefault()).toLocalTime(),
-    alertType = AlertType.fromCode(alertType),
+    time = Instant.ofEpochSecond(alertTime).atZone(ZoneId.systemDefault()).toLocalTime(),
+    type = AlertType.fromCode(alertType),
 )
 
 fun AlertWithCity.toDomainModel() = AlertCityDetails(

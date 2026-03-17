@@ -19,11 +19,14 @@ interface CityAlertDao {
     fun observeActiveAlerts(): Flow<List<AlertWithCity>>
 
     @Upsert
-    suspend fun upsertAlert(alert: AlertEntity)
+    suspend fun upsertAlert(alert: AlertEntity): Long
 
     @Query("UPDATE alerts SET isEnabled = :enabled WHERE id = :alertId")
     suspend fun updateAlertEnabled(alertId: Int, enabled: Boolean)
 
     @Query("DELETE FROM alerts WHERE id = :alertId")
     suspend fun deleteAlert(alertId: Int): Int
+
+    @Query("SELECT * FROM alerts WHERE id = :alertId")
+    suspend fun getAlertById(alertId: Int): AlertEntity?
 }

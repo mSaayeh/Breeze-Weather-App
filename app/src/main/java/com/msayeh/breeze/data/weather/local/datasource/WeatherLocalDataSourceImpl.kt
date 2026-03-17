@@ -11,6 +11,7 @@ import com.msayeh.breeze.data.weather.local.entities.CityEntity
 import com.msayeh.breeze.data.weather.local.entities.CityWithWeather
 import com.msayeh.breeze.data.weather.local.entities.CurrentWeatherEntity
 import com.msayeh.breeze.data.weather.local.entities.ForecastSlotEntity
+import com.msayeh.breeze.domain.exception.AlertNotFoundException
 import com.msayeh.breeze.domain.exception.CityNotFoundException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -81,9 +82,11 @@ class WeatherLocalDataSourceImpl @Inject constructor(
 
     override fun observeAllActiveAlerts(): Flow<List<AlertWithCity>> = cityAlertDao.observeActiveAlerts()
 
-    override suspend fun upsertAlert(alert: AlertEntity) = cityAlertDao.upsertAlert(alert)
+    override suspend fun upsertAlert(alert: AlertEntity) = cityAlertDao.upsertAlert(alert).let { cityAlertDao.getAlertById(it.toInt()) ?: throw AlertNotFoundException() }
 
     override suspend fun updateAlertEnabled(alertId: Int, enabled: Boolean) = cityAlertDao.updateAlertEnabled(alertId, enabled)
 
     override suspend fun deleteAlert(alertId: Int): Int = cityAlertDao.deleteAlert(alertId)
+
+    override suspend fun getAlertById(alertId: Int): AlertEntity? = cityAlertDao.getAlertById(alertId)
 }

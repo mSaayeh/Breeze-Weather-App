@@ -19,6 +19,7 @@ interface WeatherRepository {
     suspend fun addCityToFavorites(city: City): Resource<City>
     suspend fun removeCityFromFavorites(cityId: Int): Resource<Unit>
     suspend fun refreshWeather(cityId: Int): Resource<Unit>
+    suspend fun refreshCurrentWeather(cityId: Int): Resource<Unit>
     suspend fun refreshIfStale(cityId: Int): Resource<Boolean>
     suspend fun refreshWithDebounce(cityId: Int, debounceMillis: Long = CacheUtils.DEFAULT_REFRESH_DEBOUNCE_TIME): Resource<Boolean>
     suspend fun refreshAllCache(): Resource<Unit>
@@ -28,4 +29,5 @@ interface WeatherRepository {
     suspend fun upsertAlert(alert: Alert): Resource<Unit>
     suspend fun updateAlertEnabled(alertId: Int, enabled: Boolean): Resource<Unit>
     suspend fun deleteAlert(alertId: Int): Resource<Unit>
+    suspend fun getAlertById(alertId: Int): Resource<Alert>
 }

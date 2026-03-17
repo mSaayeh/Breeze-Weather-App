@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -47,8 +46,8 @@ class AlertsViewModel @Inject constructor(
                 Alert(
                     cityId = -1,
                     isEnabled = true,
-                    alertTime = LocalTime.now(),
-                    alertType = AlertType.NOTIFICATION,
+                    time = LocalTime.now().plusSeconds(10),
+                    type = AlertType.ALARM,
                 )
             )
             _uiState.emit(UiState.Success(emptyList()))
