@@ -154,7 +154,7 @@ fun AlertsScreen(
                             .padding(16.dp)
                     ) {
                         Text(
-                            stringResource(R.string.you_don_t_have_any_alerts_yet),
+                            stringResource(R.string.no_alerts_yet),
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontSize = 22.sp
                             ),
@@ -162,7 +162,7 @@ fun AlertsScreen(
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            stringResource(R.string.tap_the_button_to_add_a_new_alert),
+                            stringResource(R.string.use_plus_to_add_alerts),
                             style = MaterialTheme.typography.titleSmall.copy(
                                 fontSize = 16.sp
                             ),

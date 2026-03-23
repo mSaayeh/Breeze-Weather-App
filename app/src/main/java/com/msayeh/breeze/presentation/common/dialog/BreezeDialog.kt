@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.TextAutoSize
+import androidx.compose.foundation.text.TextAutoSizeDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
@@ -28,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
@@ -104,7 +107,7 @@ private fun RowScope.ButtonFromType(dialogButton: DialogButton, onClick: () -> U
             onClick,
             modifier = Modifier.weight(1f)
         ) {
-            Text(dialogButton.text)
+            Text(dialogButton.text, autoSize = TextAutoSize.StepBased(10.sp, 16.sp, stepSize = 1.sp), maxLines = 1)
         }
 
         DialogButtonType.DESTRUCTIVE -> Button(
@@ -112,20 +115,20 @@ private fun RowScope.ButtonFromType(dialogButton: DialogButton, onClick: () -> U
             modifier = Modifier.weight(1f),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
         ) {
-            Text(dialogButton.text)
+            Text(dialogButton.text, autoSize = TextAutoSize.StepBased(10.sp, 16.sp, stepSize = 1.sp), maxLines = 1)
         }
 
         DialogButtonType.ELEVATED -> ElevatedButton(
             onClick,
             modifier = Modifier.weight(1f),
         ) {
-            Text(dialogButton.text)
+            Text(dialogButton.text, autoSize = TextAutoSize.StepBased(10.sp, 16.sp, stepSize = 1.sp), maxLines = 1)
         }
 
         DialogButtonType.TEXT -> TextButton(
             onClick,
             modifier = Modifier.weight(1f),
         ) {
-            Text(dialogButton.text)
+            Text(dialogButton.text, autoSize = TextAutoSize.StepBased(10.sp, 16.sp, stepSize = 1.sp), maxLines = 1)
         }
     }

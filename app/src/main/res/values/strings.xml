@@ -14,7 +14,7 @@
     <string name="weather_refreshed_successfully">Weather refreshed successfully</string>
     <string name="location_permission_denied">Location permission denied</string>
     <string name="enable_location_or_choose_city">Please grant location permission or add a location manually to use the app.</string>
-    <string name="enable_location">Enable Location</string>
+    <string name="enable_location">Grant Permission</string>
     <string name="error_getting_current_location">Error getting current location</string>
     <string name="select_city_manually">An error occurred while trying to get the weather for your current location.\nPlease choose a city manually.</string>
     <string name="choose_manually_instead">Choose manually instead</string>
@@ -71,8 +71,10 @@
     <string name="missing_location_permission">Please enable notification permission to use this feature.</string>
     <string name="grant_permission">Grant Permission</string>
     <string name="enable_notification_permission">Enable notification permission</string>
-    <string name="you_don_t_have_any_alerts_yet">You don\'t have any alerts yet</string>
-    <string name="tap_the_button_to_add_a_new_alert">Tap the + button to add a new alert</string>
+    <string name="no_alerts_yet">You don\'t have any alerts yet</string>
+    <string name="use_plus_to_add_alerts">Tap the + button to add a new alert</string>
+    <string name="no_locations_yet">You don\'t have any locations yetز</string>
+    <string name="use_plus_to_add_locations">Tap the + button to add a new custom locations. Or use the location icon to add your current location.</string>
     <string name="notification_icon">Notification Icon</string>
     <string name="alarm_icon">Alarm Icon</string>
     <plurals name="added_locations">

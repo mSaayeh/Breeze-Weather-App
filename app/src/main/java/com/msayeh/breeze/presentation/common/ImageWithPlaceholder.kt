@@ -16,7 +16,7 @@ fun ImageWithPlaceholder(
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Fit,
     contentDescription: String? = null,
-    @DrawableRes placeholder: Int = R.drawable.ic_launcher_foreground
+    @DrawableRes placeholder: Int = R.mipmap.ic_launcher_foreground
 ) {
     AnimatedContent(image, modifier = modifier) {
         Image(
