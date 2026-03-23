@@ -69,6 +69,13 @@
     <string name="alarm_service">خدمة المنبّه</string>
     <string name="dismiss">إغلاق</string>
     <string name="feels_like">تشعر كأنه:</string>
+    <string name="missing_location_permission">يجب منح صلاحية إرسال الإشعارات لاستخدام هذه الميزة.</string>
+    <string name="grant_permission">امنح الصلاحية</string>
+    <string name="enable_notification_permission">امنح صلاحية الإشعارات</string>
+    <string name="you_don_t_have_any_alerts_yet">ليس لديك أي تنبيهات بعد.</string>
+    <string name="tap_the_button_to_add_a_new_alert">استخدم علامة + لبدأ إضافة التنبيهات.</string>
+    <string name="notification_icon">أيقونة الاشعار</string>
+    <string name="alarm_icon">أيقونة المنبه</string>
     <plurals name="added_locations" tools:ignore="MissingQuantity">
         <item quantity="one">%d موقع مضاف</item>
         <item quantity="two">%d موقعان مضافان</item>
