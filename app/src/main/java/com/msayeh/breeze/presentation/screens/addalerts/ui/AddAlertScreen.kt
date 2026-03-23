@@ -46,7 +46,7 @@ import com.msayeh.breeze.domain.model.AlertType
 import com.msayeh.breeze.domain.model.City
 import com.msayeh.breeze.presentation.navigation.Route
 import com.msayeh.breeze.presentation.screens.addalerts.viewmodel.AddAlertViewModel
-import com.msayeh.breeze.presentation.screens.settings.ui.components.SettingsSelector
+import com.msayeh.breeze.presentation.common.SettingsSelector
 import com.msayeh.breeze.presentation.utils.events.UiEventsHandler
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter

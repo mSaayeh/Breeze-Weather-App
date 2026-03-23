@@ -49,10 +49,10 @@
     <string name="units">الوحدات</string>
     <string name="speed">السرعة</string>
     <string name="temperature">درجة الحرارة</string>
-    <string name="celsius">مئوية</string>
-    <string name="fahrenheit">فهرنهايت</string>
+    <string name="celsius">°م</string>
+    <string name="fahrenheit">°ف</string>
     <string name="weather_alerts">تنبيهات الطقس</string>
-    <string name="kelvin">كلفن</string>
+    <string name="kelvin">ك</string>
     <string name="app_settings">إعدادات التطبيق</string>
     <string name="language">اللغة</string>
     <string name="arabic">العربية</string>
