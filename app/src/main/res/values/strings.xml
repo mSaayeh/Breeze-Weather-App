@@ -77,6 +77,7 @@
     <string name="use_plus_to_add_locations">Tap the + button to add a new custom locations. Or use the location icon to add your current location.</string>
     <string name="notification_icon">Notification Icon</string>
     <string name="alarm_icon">Alarm Icon</string>
+    <string name="save_location">Save Location</string>
     <plurals name="added_locations">
         <item quantity="one">%d Added Location</item>
         <item quantity="other">%d Added Locations</item>

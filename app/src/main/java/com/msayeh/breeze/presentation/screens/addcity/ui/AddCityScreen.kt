@@ -184,7 +184,7 @@ fun AddCityScreen(
                     contentDescription = null,
                 )
                 Spacer(Modifier.width(16.dp))
-                Text("Save Location")
+                Text(stringResource(R.string.save_location))
             }
         }
     }

@@ -45,6 +45,7 @@ import com.msayeh.breeze.presentation.screens.home.viewmodel.HomeState
 import com.msayeh.breeze.presentation.screens.home.viewmodel.HomeViewModel
 import com.msayeh.breeze.presentation.utils.UnitPreferences
 import com.msayeh.breeze.presentation.utils.events.UiEventsHandler
+import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreen(
@@ -81,8 +82,12 @@ fun HomeScreen(
     }
 
     LaunchedEffect(Unit) {
+        var firstLaunch = true
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-            Log.d("SelectedCity", "Resumed")
+            if(firstLaunch) {
+                firstLaunch = false
+                delay(500)
+            }
             viewModel.checkCityId()
         }
     }

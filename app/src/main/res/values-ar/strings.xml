@@ -78,6 +78,7 @@
     <string name="alarm_icon">أيقونة المنبه</string>
     <string name="no_locations_yet">ليس لديك أي أماكن مضافة بعد.</string>
     <string name="use_plus_to_add_locations">استخدم + لإضافة مكان جديد. أو اضغط على أيقونة الموقع لإضافة موقعك الحالي.</string>
+    <string name="save_location">أضف الموقع</string>
     <plurals name="added_locations" tools:ignore="MissingQuantity">
         <item quantity="one">%d موقع مضاف</item>
         <item quantity="two">%d موقعان مضافان</item>
