@@ -3,9 +3,11 @@ package com.msayeh.breeze.presentation.alerts.scheduler
 import android.content.Context
 import android.util.Log
 import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.msayeh.breeze.domain.model.Alert
@@ -24,25 +26,20 @@ class WorkManagerScheduler @Inject constructor(
     private val workManager: WorkManager,
 ) {
     fun schedule(alert: Alert) {
-        val request = OneTimeWorkRequestBuilder<WeatherNotificationWorker>()
-            .setInitialDelay(calculateDelay(alert.time), TimeUnit.MILLISECONDS)
+        val request = PeriodicWorkRequestBuilder<WeatherNotificationWorker>(
+            24, TimeUnit.HOURS
+        ).setInitialDelay(calculateDelay(alert.time), TimeUnit.MILLISECONDS)
             .setInputData(workDataOf(WeatherAlarmReceiver.EXTRA_ALERT_ID to alert.id))
             .setConstraints(
-                Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build()
-            )
-            .build()
+                Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+            ).build()
 
-        workManager.enqueueUniqueWork(
-            workName(alert.id),
-            ExistingWorkPolicy.REPLACE,
-            request
+        workManager.enqueueUniquePeriodicWork(
+            workName(alert.id), ExistingPeriodicWorkPolicy.REPLACE, request
         )
     }
 
     fun cancel(alertId: Int) {
-        Log.d("Alerts", "Canceling work for alert $alertId")
         workManager.cancelUniqueWork(workName(alertId))
     }
 

@@ -196,4 +196,23 @@ class WeatherRepositoryImpl @Inject constructor(
     override suspend fun getAlertById(alertId: Int): Resource<Alert> = tryResourceSuspend {
         localDataSource.getAlertById(alertId)?.toDomainModel() ?: throw AlertNotFoundException()
     }
+
+    override suspend fun rescheduleAlert(alertId: Int): Resource<Unit> = tryResourceSuspend {
+        val existingAlert =
+            localDataSource.getAlertById(alertId)?.toDomainModel() ?: throw AlertNotFoundException()
+        if (existingAlert.isEnabled) {
+            schedulerManager.cancel(existingAlert)
+            schedulerManager.schedule(existingAlert)
+        }
+    }
+
+    override suspend fun rescheduleAllAlerts(): Resource<Unit> = tryResourceSuspend {
+        val alerts = localDataSource.getAllActiveAlerts().map { it.toDomainModel().alert }
+        alerts.forEach { alert ->
+            if (alert.isEnabled) {
+                schedulerManager.cancel(alert)
+                schedulerManager.schedule(alert)
+            }
+        }
+    }
 }

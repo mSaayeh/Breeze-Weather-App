@@ -45,6 +45,7 @@ class NotificationUtils @Inject constructor(
                 android.R.drawable.ic_notification_clear_all,
                 context.getString(R.string.dismiss), buildDismissPendingIntent(alertId)
             )
+            .setDeleteIntent(buildDismissPendingIntent(alertId))
             .build()
 
     fun sendWeatherNotification(alertId: Int, title: String, message: String, weatherConditionIcon: Int?) {

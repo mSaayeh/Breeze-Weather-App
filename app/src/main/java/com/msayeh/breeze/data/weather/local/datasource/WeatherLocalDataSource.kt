@@ -31,6 +31,7 @@ interface WeatherLocalDataSource {
     fun observeAllCitiesWithWeather(): Flow<List<CityWithWeather>>
 
     fun observeAllAlerts(): Flow<List<AlertWithCity>>
+    suspend fun getAllActiveAlerts(): List<AlertWithCity>
     fun observeAllActiveAlerts(): Flow<List<AlertWithCity>>
     suspend fun upsertAlert(alert: AlertEntity): AlertEntity
     suspend fun updateAlertEnabled(alertId: Int, enabled: Boolean)

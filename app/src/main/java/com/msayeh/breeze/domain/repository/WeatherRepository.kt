@@ -30,4 +30,6 @@ interface WeatherRepository {
     suspend fun updateAlertEnabled(alertId: Int, enabled: Boolean): Resource<Unit>
     suspend fun deleteAlert(alertId: Int): Resource<Unit>
     suspend fun getAlertById(alertId: Int): Resource<Alert>
+    suspend fun rescheduleAlert(alertId: Int): Resource<Unit>
+    suspend fun rescheduleAllAlerts(): Resource<Unit>
 }

@@ -8,6 +8,7 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
+import com.msayeh.breeze.domain.model.Resource
 import com.msayeh.breeze.domain.repository.WeatherRepository
 import com.msayeh.breeze.presentation.alerts.service.AlarmService
 import com.msayeh.breeze.presentation.alerts.worker.WeatherNotificationWorker
@@ -48,9 +49,8 @@ class WeatherAlarmReceiver : BroadcastReceiver() {
 
         val goAsync = goAsync()
         CoroutineScope(Dispatchers.IO).launch {
-            // TODO: Reschedule the alert instead of disabling
             try {
-                weatherRepository.updateAlertEnabled(alertId, false)
+                weatherRepository.rescheduleAlert(alertId)
             } finally {
                 goAsync.finish()
             }

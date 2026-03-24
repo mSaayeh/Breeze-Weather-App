@@ -18,6 +18,10 @@ interface CityAlertDao {
     @Query("SELECT * FROM alerts WHERE isEnabled = 1")
     fun observeActiveAlerts(): Flow<List<AlertWithCity>>
 
+    @Transaction
+    @Query("SELECT * FROM alerts WHERE isEnabled = 1")
+    suspend fun getAllActiveAlerts(): List<AlertWithCity>
+
     @Upsert
     suspend fun upsertAlert(alert: AlertEntity): Long
 

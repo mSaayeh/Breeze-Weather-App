@@ -80,6 +80,8 @@ class WeatherLocalDataSourceImpl @Inject constructor(
 
     override fun observeAllAlerts(): Flow<List<AlertWithCity>> = cityAlertDao.observeAllCitiesWithAlerts()
 
+    override suspend fun getAllActiveAlerts(): List<AlertWithCity> = cityAlertDao.getAllActiveAlerts()
+
     override fun observeAllActiveAlerts(): Flow<List<AlertWithCity>> = cityAlertDao.observeActiveAlerts()
 
     override suspend fun upsertAlert(alert: AlertEntity) = cityAlertDao.upsertAlert(alert).let { cityAlertDao.getAlertById(it.toInt()) ?: throw AlertNotFoundException() }
