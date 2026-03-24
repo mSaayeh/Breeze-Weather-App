@@ -26,6 +26,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.compose.rememberLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
+import com.msayeh.breeze.R
 import com.msayeh.breeze.domain.model.City
 import com.msayeh.breeze.domain.model.CityWeatherDetails
 import com.msayeh.breeze.domain.model.Coordinates
@@ -163,7 +164,7 @@ private fun HomeContentPreview() {
                     feelsLike = Temperature(12.0),
                     humidity = 100,
                     wind = Wind(15.0, 23),
-                    condition = WeatherCondition("Cloudy", "01n"),
+                    condition = WeatherCondition(R.string.clouds, "01n"),
                     pressure = 1000,
                     sunCycle = null,
                     fetchedAt = 1518917,

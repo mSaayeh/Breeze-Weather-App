@@ -18,7 +18,7 @@ import androidx.room.PrimaryKey
 data class ForecastSlotEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val cityId: Int,
-    val weatherName: String,
+    val weatherConditionId: Int,
     val datetime: Long,
     val tempCelsius: Double,
     val feelsLikeCelsius: Double,
@@ -33,7 +33,7 @@ data class ForecastSlotEntity(
 ) {
     fun toCurrentWeatherEntity(sunrise: Long, sunset: Long): CurrentWeatherEntity = CurrentWeatherEntity(
         cityId = cityId,
-        weatherName = weatherName,
+        weatherConditionId = weatherConditionId,
         datetime = datetime,
         tempCelsius = tempCelsius,
         feelsLikeCelsius = feelsLikeCelsius,

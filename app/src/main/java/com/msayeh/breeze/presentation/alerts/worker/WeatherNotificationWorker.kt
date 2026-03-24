@@ -44,7 +44,7 @@ class WeatherNotificationWorker @AssistedInject constructor(
             val tempUnit = prefsRepository.getTempUnitFlow().first()
             val title = "${weather.city.name} Current Weather"
             val message =
-                "${weather.currentWeather.temperature.format(tempUnit)} - ${weather.currentWeather.condition.title}"
+                "${weather.currentWeather.temperature.format(tempUnit)} - ${weather.currentWeather.condition.nameResId}"
             val conditionIcon = weather.currentWeather.condition.iconRes
 
             when (alert.type) {

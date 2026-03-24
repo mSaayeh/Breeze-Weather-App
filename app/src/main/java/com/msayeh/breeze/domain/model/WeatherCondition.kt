@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import com.msayeh.breeze.R
 
 data class WeatherCondition(
-    val title: String,
+    val nameResId: Int,
     val iconCode: String,
 ) {
     val iconRes: Int

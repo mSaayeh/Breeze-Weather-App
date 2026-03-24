@@ -18,7 +18,7 @@ import com.msayeh.breeze.data.weather.local.entities.ForecastSlotEntity
         ForecastSlotEntity::class,
         AlertEntity::class,
     ],
-    version = 3,
+    version = 4,
     exportSchema = true
 )
 abstract class WeatherDatabase: RoomDatabase() {

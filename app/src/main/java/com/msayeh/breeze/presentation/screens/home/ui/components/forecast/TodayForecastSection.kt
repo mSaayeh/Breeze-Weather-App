@@ -54,7 +54,7 @@ fun TodayForecastSection(
                 items(forecasts) {
                     ForecastItem(
                         it.weather.condition.iconRes,
-                        it.weather.condition.title,
+                        stringResource(it.weather.condition.nameResId),
                         it.weather.temperature.format(unitPreferences.tempUnit),
                         it.datetime.toLocalTime().format(DateTimeFormatter.ofPattern("h a")),
                     )

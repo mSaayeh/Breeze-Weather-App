@@ -1,5 +1,7 @@
 package com.msayeh.breeze.data.weather.mappers
 
+import androidx.annotation.StringRes
+import com.msayeh.breeze.R
 import com.msayeh.breeze.data.weather.local.entities.AlertEntity
 import com.msayeh.breeze.data.weather.local.entities.AlertWithCity
 import com.msayeh.breeze.data.weather.local.entities.CityEntity
@@ -37,7 +39,7 @@ fun CurrentWeatherEntity.toDomainModel() = Weather(
     humidity = humidity,
     wind = Wind(windSpeedMpS, windDeg),
     condition = WeatherCondition(
-        title = weatherName,
+        nameResId = getConditionStringResId(weatherConditionId),
         iconCode = iconCode,
     ),
     pressure = pressure,
@@ -62,7 +64,7 @@ fun ForecastSlotEntity.toDomainModel() = ForecastSlot(
         wind = Wind(windSpeedMpS, windDeg),
         condition = WeatherCondition(
             iconCode = iconCode,
-            title = weatherName,
+            nameResId = getConditionStringResId(weatherConditionId),
         ),
         pressure = pressure,
         sunCycle = null,
@@ -88,3 +90,26 @@ fun AlertWithCity.toDomainModel() = AlertCityDetails(
     city = city.toDomainModel(),
     alert = alert.toDomainModel()
 )
+
+@StringRes
+fun getConditionStringResId(conditionId: Int): Int {
+    return when (conditionId) {
+        in 200..299 -> R.string.thunderstorm
+        in 300..399 -> R.string.drizzle
+        in 500..599 -> R.string.rain
+        in 600..699 -> R.string.snow
+        in 701..710 -> R.string.mist
+        in 711..720 -> R.string.smoke
+        in 721..730 -> R.string.haze
+        in 731..740 -> R.string.dust
+        in 741..750 -> R.string.fog
+        in 751..760 -> R.string.sand
+        761 -> R.string.dust
+        762 -> R.string.ash
+        in 771..780 -> R.string.squall
+        in 781..799 -> R.string.tornado
+        800 -> R.string.clear
+        in 801..899 -> R.string.clouds
+        else -> R.string.unknown
+    }
+}

@@ -79,7 +79,7 @@ fun CurrentWeatherHomeSection(
         CurrentWeatherCondition(
             currentWeather?.temperature,
             unitPreferences.tempUnit,
-            currentWeather?.condition?.title,
+            currentWeather?.condition?.nameResId?.let { stringResource(it) },
         )
         Text(
             if (currentWeather?.feelsLike != null) stringResource(R.string.feels_like) + currentWeather.feelsLike.format(

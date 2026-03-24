@@ -79,6 +79,22 @@
     <string name="no_locations_yet">ليس لديك أي أماكن مضافة بعد.</string>
     <string name="use_plus_to_add_locations">استخدم + لإضافة مكان جديد. أو اضغط على أيقونة الموقع لإضافة موقعك الحالي.</string>
     <string name="save_location">أضف الموقع</string>
+    <string name="thunderstorm">عاصفة رعدية</string>
+    <string name="drizzle">رذاذ</string>
+    <string name="rain">أمطار</string>
+    <string name="snow">ثلج</string>
+    <string name="mist">ضباب خفيف</string>
+    <string name="smoke">دخان</string>
+    <string name="haze">ضباب دخاني</string>
+    <string name="dust">غبار</string>
+    <string name="fog">ضباب</string>
+    <string name="sand">عاصفة رملية</string>
+    <string name="ash">رماد بركاني</string>
+    <string name="squall">عاصفة مفاجئة</string>
+    <string name="tornado">إعصار</string>
+    <string name="clear">صحو</string>
+    <string name="clouds">غائم</string>
+    <string name="unknown">غير معروف</string>
     <plurals name="added_locations" tools:ignore="MissingQuantity">
         <item quantity="one">%d موقع مضاف</item>
         <item quantity="two">%d موقعان مضافان</item>

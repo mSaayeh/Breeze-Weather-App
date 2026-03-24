@@ -17,7 +17,7 @@ import androidx.room.PrimaryKey
 )
 data class CurrentWeatherEntity(
     @PrimaryKey val cityId: Int,
-    val weatherName: String,
+    val weatherConditionId: Int,
     val tempCelsius: Double,
     val feelsLikeCelsius: Double,
     val minTempCelsius: Double,

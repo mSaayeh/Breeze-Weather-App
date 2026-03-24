@@ -50,7 +50,7 @@ fun DailyForecastSection(forecasts: List<ForecastDay>?, unitPreferences: UnitPre
                 items(forecasts) {
                     ForecastItem(
                         it.representative.weather.condition.iconRes,
-                        it.representative.weather.condition.title,
+                        stringResource(it.representative.weather.condition.nameResId),
                         it.temperatureRange.format(unitPreferences.tempUnit),
                         it.date.format(DateTimeFormatter.ofPattern("EE")),
                     )

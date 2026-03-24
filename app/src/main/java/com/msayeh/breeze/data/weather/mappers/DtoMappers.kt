@@ -11,7 +11,7 @@ import com.msayeh.breeze.domain.model.Coordinates
 
 fun WeatherResponseDto.toEntity(cityId: Int): CurrentWeatherEntity = CurrentWeatherEntity(
     cityId = cityId,
-    weatherName = weather[0].main,
+    weatherConditionId = weather[0].id,
     tempCelsius = main.temp,
     feelsLikeCelsius = main.feelsLike,
     minTempCelsius = main.tempMin,
@@ -29,7 +29,7 @@ fun WeatherResponseDto.toEntity(cityId: Int): CurrentWeatherEntity = CurrentWeat
 
 fun ForecastSlotDto.toEntity(cityId: Int, fetchedAt: Long) = ForecastSlotEntity(
     cityId = cityId,
-    weatherName = weather.first().main,
+    weatherConditionId = weather.first().id,
     datetime = datetime,
     tempCelsius = main.temp,
     feelsLikeCelsius = main.feelsLike,
