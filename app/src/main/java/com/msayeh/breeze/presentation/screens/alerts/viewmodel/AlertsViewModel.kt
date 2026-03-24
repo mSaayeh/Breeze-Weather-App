@@ -89,6 +89,20 @@ class AlertsViewModel @Inject constructor(
         }
     }
 
+    fun onPermissionResult(granted: Boolean) {
+        if (granted) {
+            checkNotificationPermission()
+        } else {
+            _uiState.update {
+                UiState.Error(
+                    MissingPermissionException(
+                        R.string.missing_location_permission
+                    )
+                )
+            }
+        }
+    }
+
     fun requestOpenAppSettings() {
         if (!isGrantPermissionClicked) return
         isGrantPermissionClicked = false

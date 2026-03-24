@@ -57,6 +57,8 @@ fun AlertsScreen(
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) @RequiresApi(Build.VERSION_CODES.TIRAMISU) { permissions ->
+        val isGranted = permissions[Manifest.permission.POST_NOTIFICATIONS] ?: false
+        viewModel.onPermissionResult(isGranted)
         if (activity == null) return@rememberLauncherForActivityResult
         val permission = Manifest.permission.POST_NOTIFICATIONS
         if (!activity.shouldShowRequestPermissionRationale(permission) && permissions[permission] == false) {

@@ -168,6 +168,7 @@ class HomeViewModel @Inject constructor(
         if (selectedCityId.value != null) return
         viewModelScope.launch {
             if (granted) {
+                emitEvent(UiEvent.HideDialog)
                 val coordinates = LocationUtils.getCurrentLocationCoordinates(application)
                 if (coordinates == null) {
                     showPermissionDeniedDialog()
