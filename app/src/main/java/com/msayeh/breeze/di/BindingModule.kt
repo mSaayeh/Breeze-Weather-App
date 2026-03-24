@@ -10,6 +10,8 @@ import com.msayeh.breeze.data.weather.remote.datasource.WeatherRemoteDataSourceI
 import com.msayeh.breeze.data.weather.repository.WeatherRepositoryImpl
 import com.msayeh.breeze.domain.repository.PreferencesRepository
 import com.msayeh.breeze.domain.repository.WeatherRepository
+import com.msayeh.breeze.domain.utils.AlertScheduler
+import com.msayeh.breeze.presentation.alerts.scheduler.AlertSchedulerManager
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -39,4 +41,8 @@ abstract class BindingModule {
     @Binds
     @Singleton
     abstract fun bindPreferencesRepository(preferencesRepository: PreferencesRepositoryImpl): PreferencesRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAlertScheduler(alertSchedulerManager: AlertSchedulerManager): AlertScheduler
 }

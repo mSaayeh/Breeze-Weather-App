@@ -19,7 +19,7 @@ import com.msayeh.breeze.domain.model.Coordinates
 import com.msayeh.breeze.domain.model.Resource
 import com.msayeh.breeze.domain.model.tryResourceSuspend
 import com.msayeh.breeze.domain.repository.WeatherRepository
-import com.msayeh.breeze.presentation.alerts.scheduler.AlertSchedulerManager
+import com.msayeh.breeze.domain.utils.AlertScheduler
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -27,7 +27,7 @@ import javax.inject.Inject
 class WeatherRepositoryImpl @Inject constructor(
     private val remoteDataSource: WeatherRemoteDataSource,
     private val localDataSource: WeatherLocalDataSource,
-    private val schedulerManager: AlertSchedulerManager,
+    private val alertScheduler: AlertScheduler,
 ) : WeatherRepository {
     override fun observeAllCities(): Flow<List<City>> =
         localDataSource.observeAllCities().map { cities -> cities.map { it.toDomainModel() } }
@@ -174,7 +174,7 @@ class WeatherRepositoryImpl @Inject constructor(
     override suspend fun upsertAlert(alert: Alert): Resource<Unit> = tryResourceSuspend {
         val addedAlert = localDataSource.upsertAlert(alert.toEntity()).toDomainModel()
         if (alert.isEnabled) {
-            schedulerManager.schedule(addedAlert)
+            alertScheduler.schedule(addedAlert)
         }
     }
 
@@ -184,13 +184,13 @@ class WeatherRepositoryImpl @Inject constructor(
         val alert =
             localDataSource.getAlertById(alertId)?.toDomainModel() ?: throw AlertNotFoundException()
         localDataSource.updateAlertEnabled(alertId, enabled)
-        if (enabled) schedulerManager.schedule(alert) else schedulerManager.cancel(alert)
+        if (enabled) alertScheduler.schedule(alert) else alertScheduler.cancel(alert)
     }
 
     override suspend fun deleteAlert(alertId: Int): Resource<Unit> = tryResourceSuspend {
         val alert =
             localDataSource.getAlertById(alertId)?.toDomainModel() ?: throw AlertNotFoundException()
-        schedulerManager.cancel(alert)
+        alertScheduler.cancel(alert)
         localDataSource.deleteAlert(alertId)
     }
 
@@ -202,8 +202,8 @@ class WeatherRepositoryImpl @Inject constructor(
         val existingAlert =
             localDataSource.getAlertById(alertId)?.toDomainModel() ?: throw AlertNotFoundException()
         if (existingAlert.isEnabled) {
-            schedulerManager.cancel(existingAlert)
-            schedulerManager.schedule(existingAlert)
+            alertScheduler.cancel(existingAlert)
+            alertScheduler.schedule(existingAlert)
         }
     }
 
@@ -211,8 +211,8 @@ class WeatherRepositoryImpl @Inject constructor(
         val alerts = localDataSource.getAllActiveAlerts().map { it.toDomainModel().alert }.filter { if(alertType != null) it.type == alertType else true }
         alerts.forEach { alert ->
             if (alert.isEnabled) {
-                schedulerManager.cancel(alert)
-                schedulerManager.schedule(alert)
+                alertScheduler.cancel(alert)
+                alertScheduler.schedule(alert)
             }
         }
     }
