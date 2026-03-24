@@ -35,7 +35,7 @@ class WeatherDaoTest {
 
     private val currentWeatherEntity = CurrentWeatherEntity(
         cityId = 1,
-        weatherName = "Clear",
+        weatherConditionId = 201,
         tempCelsius = 25.0,
         feelsLikeCelsius = 24.0,
         minTempCelsius = 20.0,
@@ -53,7 +53,7 @@ class WeatherDaoTest {
 
     private val forecastSlotEntity = ForecastSlotEntity(
         cityId = 1,
-        weatherName = "Cloudy",
+        weatherConditionId = 201,
         datetime = 1000L,
         tempCelsius = 22.0,
         feelsLikeCelsius = 21.0,

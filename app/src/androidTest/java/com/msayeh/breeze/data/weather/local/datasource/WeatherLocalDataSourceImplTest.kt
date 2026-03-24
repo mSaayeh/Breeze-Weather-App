@@ -33,7 +33,7 @@ class WeatherLocalDataSourceImplTest {
 
     val currentWeatherEntity = CurrentWeatherEntity(
         cityId = 5,
-        weatherName = "Sunny",
+        weatherConditionId = 201,
         tempCelsius = 15.2,
         feelsLikeCelsius = 16.2,
         minTempCelsius = 10.5,

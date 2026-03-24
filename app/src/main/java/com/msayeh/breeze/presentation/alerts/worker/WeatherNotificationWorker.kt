@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.first
 
 @HiltWorker
 class WeatherNotificationWorker @AssistedInject constructor(
-    @Assisted appContext: Context,
+    @Assisted private val appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val weatherRepository: WeatherRepository,
     private val prefsRepository: PreferencesRepository,
@@ -44,7 +44,7 @@ class WeatherNotificationWorker @AssistedInject constructor(
             val tempUnit = prefsRepository.getTempUnitFlow().first()
             val title = "${weather.city.name} Current Weather"
             val message =
-                "${weather.currentWeather.temperature.format(tempUnit)} - ${weather.currentWeather.condition.nameResId}"
+                "${weather.currentWeather.temperature.format(tempUnit)} - ${appContext.getString(weather.currentWeather.condition.nameResId)}"
             val conditionIcon = weather.currentWeather.condition.iconRes
 
             when (alert.type) {
