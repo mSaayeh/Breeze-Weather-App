@@ -27,6 +27,9 @@ fun UiEventsHandler(uiEventSharedFlow: SharedFlow<UiEvent>, handleNavigation: ((
             when (event) {
                 is UiEvent.NavigateTo -> handleNavigation?.invoke(event.route) ?: throw IllegalArgumentException("No navigation handler provided")
                 is UiEvent.ShowSnackbar -> snackbarHost.showSnackbar(event.message)
+                is UiEvent.NavigateWithIntent -> {
+                    context.startActivity(event.intent)
+                }
                 is UiEvent.ShowDialog -> {
                     Log.d("DialogContainer", "ShowDialog: ${event.dialog}")
                     dialogState.showDialog(event.dialog)

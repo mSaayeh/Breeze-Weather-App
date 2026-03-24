@@ -1,6 +1,12 @@
 package com.msayeh.breeze.presentation.screens.addalerts.viewmodel
 
+import android.app.AlarmManager
 import android.app.Application
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.msayeh.breeze.R
@@ -9,6 +15,7 @@ import com.msayeh.breeze.domain.model.AlertType
 import com.msayeh.breeze.domain.model.Resource
 import com.msayeh.breeze.domain.repository.WeatherRepository
 import com.msayeh.breeze.presentation.navigation.Route
+import com.msayeh.breeze.presentation.utils.AlarmPermissionManager
 import com.msayeh.breeze.presentation.utils.events.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -26,6 +33,7 @@ import javax.inject.Inject
 class AddAlertViewModel @Inject constructor(
     private val weatherRepository: WeatherRepository,
     private val application: Application,
+    private val alarmPermissionManager: AlarmPermissionManager,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AddAlertState())
     private val cities = weatherRepository.observeAllCities()
@@ -50,6 +58,19 @@ class AddAlertViewModel @Inject constructor(
     }
 
     fun onTypeSelected(type: AlertType) {
+        if (type == AlertType.ALARM && !alarmPermissionManager.canScheduleExactAlarms()) {
+            viewModelScope.launch {
+                _uiEvent.emit(
+                    UiEvent.NavigateWithIntent(
+                        Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            data = Uri.fromParts("package", application.packageName, null)
+                        }
+                    )
+                )
+            }
+            return
+        }
         _uiState.update { it.copy(type = type) }
     }
 
