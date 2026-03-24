@@ -3,6 +3,7 @@ package com.msayeh.breeze.domain.repository
 import com.msayeh.breeze.data.utils.CacheUtils
 import com.msayeh.breeze.domain.model.Alert
 import com.msayeh.breeze.domain.model.AlertCityDetails
+import com.msayeh.breeze.domain.model.AlertType
 import com.msayeh.breeze.domain.model.City
 import com.msayeh.breeze.domain.model.CityWeatherDetails
 import com.msayeh.breeze.domain.model.Coordinates
@@ -31,7 +32,7 @@ interface WeatherRepository {
     suspend fun deleteAlert(alertId: Int): Resource<Unit>
     suspend fun getAlertById(alertId: Int): Resource<Alert>
     suspend fun rescheduleAlert(alertId: Int): Resource<Unit>
-    suspend fun rescheduleAllAlerts(): Resource<Unit>
+    suspend fun rescheduleAllAlerts(alertType: AlertType? = null): Resource<Unit>
     suspend fun updateCurrentWeatherOnOffline(cityId: Int): Resource<Unit>
     suspend fun updateAllCurrentWeatherOnOffline(): Resource<Unit>
 }

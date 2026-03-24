@@ -1,14 +1,20 @@
 package com.msayeh.breeze.presentation.screens.alerts.viewmodel
 
 import android.app.Application
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.msayeh.breeze.R
 import com.msayeh.breeze.domain.exception.MissingPermissionException
+import com.msayeh.breeze.domain.model.Alert
 import com.msayeh.breeze.domain.model.AlertCityDetails
+import com.msayeh.breeze.domain.model.AlertType
 import com.msayeh.breeze.domain.repository.WeatherRepository
 import com.msayeh.breeze.presentation.navigation.Route
+import com.msayeh.breeze.presentation.utils.AlarmPermissionManager
 import com.msayeh.breeze.presentation.utils.UiState
 import com.msayeh.breeze.presentation.utils.events.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,7 +34,8 @@ import kotlin.time.Duration.Companion.seconds
 @HiltViewModel
 class AlertsViewModel @Inject constructor(
     private val weatherRepository: WeatherRepository,
-    private val application: Application
+    private val application: Application,
+    private val alarmPermissionManager: AlarmPermissionManager,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<UiState<List<AlertCityDetails>>> =
         MutableStateFlow(UiState.Success(emptyList()))
@@ -89,6 +96,23 @@ class AlertsViewModel @Inject constructor(
         }
     }
 
+    private fun checkAlarmsPermission(): Boolean {
+        if (!alarmPermissionManager.canScheduleExactAlarms()) {
+            viewModelScope.launch {
+                _uiEvent.emit(
+                    UiEvent.NavigateWithIntent(
+                        Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            data = Uri.fromParts("package", application.packageName, null)
+                        }
+                    )
+                )
+            }
+            return false
+        }
+        return true
+    }
+
     fun onPermissionResult(granted: Boolean) {
         if (granted) {
             checkNotificationPermission()
@@ -116,9 +140,12 @@ class AlertsViewModel @Inject constructor(
         checkNotificationPermissionPeriodically()
     }
 
-    fun onAlertEnabledChanged(alertId: Int, isEnabled: Boolean) {
+    fun onAlertEnabledChanged(alert: Alert, isEnabled: Boolean) {
+        if (alert.type == AlertType.ALARM && isEnabled && !checkAlarmsPermission()) {
+            return
+        }
         viewModelScope.launch {
-            weatherRepository.updateAlertEnabled(alertId, isEnabled)
+            weatherRepository.updateAlertEnabled(alert.id, isEnabled)
         }
     }
 

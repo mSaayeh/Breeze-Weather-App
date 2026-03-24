@@ -3,12 +3,10 @@ package com.msayeh.breeze.presentation.alerts.utils
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.drawable.Icon
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.msayeh.breeze.R
-import com.msayeh.breeze.domain.model.Alert
 import com.msayeh.breeze.presentation.alerts.receiver.WeatherAlarmReceiver
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject

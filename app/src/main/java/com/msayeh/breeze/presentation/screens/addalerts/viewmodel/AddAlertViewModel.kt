@@ -57,8 +57,8 @@ class AddAlertViewModel @Inject constructor(
         _uiState.update { it.copy(time = time) }
     }
 
-    fun onTypeSelected(type: AlertType) {
-        if (type == AlertType.ALARM && !alarmPermissionManager.canScheduleExactAlarms()) {
+    private fun checkAlarmsPermission(): Boolean {
+        if (!alarmPermissionManager.canScheduleExactAlarms()) {
             viewModelScope.launch {
                 _uiEvent.emit(
                     UiEvent.NavigateWithIntent(
@@ -69,6 +69,13 @@ class AddAlertViewModel @Inject constructor(
                     )
                 )
             }
+            return false
+        }
+        return true
+    }
+
+    fun onTypeSelected(type: AlertType) {
+        if (type == AlertType.ALARM && !checkAlarmsPermission()) {
             return
         }
         _uiState.update { it.copy(type = type) }

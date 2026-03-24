@@ -180,7 +180,7 @@ fun AlertsScreen(
                                 it,
                                 onDelete = { viewModel.deleteAlert(it.alert.id) },
                                 onEnabledSwitchChange = { isEnabled ->
-                                    viewModel.onAlertEnabledChanged(it.alert.id, isEnabled)
+                                    viewModel.onAlertEnabledChanged(it.alert, isEnabled)
                                 },
                                 modifier = Modifier.fillMaxWidth()
                             )

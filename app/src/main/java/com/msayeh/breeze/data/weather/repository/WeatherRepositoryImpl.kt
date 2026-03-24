@@ -12,6 +12,7 @@ import com.msayeh.breeze.domain.exception.AlertNotFoundException
 import com.msayeh.breeze.domain.exception.CityNotFoundException
 import com.msayeh.breeze.domain.model.Alert
 import com.msayeh.breeze.domain.model.AlertCityDetails
+import com.msayeh.breeze.domain.model.AlertType
 import com.msayeh.breeze.domain.model.City
 import com.msayeh.breeze.domain.model.CityWeatherDetails
 import com.msayeh.breeze.domain.model.Coordinates
@@ -206,8 +207,8 @@ class WeatherRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun rescheduleAllAlerts(): Resource<Unit> = tryResourceSuspend {
-        val alerts = localDataSource.getAllActiveAlerts().map { it.toDomainModel().alert }
+    override suspend fun rescheduleAllAlerts(alertType: AlertType?): Resource<Unit> = tryResourceSuspend {
+        val alerts = localDataSource.getAllActiveAlerts().map { it.toDomainModel().alert }.filter { if(alertType != null) it.type == alertType else true }
         alerts.forEach { alert ->
             if (alert.isEnabled) {
                 schedulerManager.cancel(alert)
@@ -216,24 +217,25 @@ class WeatherRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateCurrentWeatherOnOffline(cityId: Int): Resource<Unit> = tryResourceSuspend {
-        val cachedCurrentWeather = localDataSource.getCurrentWeather(cityId)
-        val cachedForecast = localDataSource.getLastForecastSlot(cityId)
-        if (cachedCurrentWeather == null || cachedForecast == null) return@tryResourceSuspend
-        if (CacheUtils.shouldReplaceCurrentWeather(
-                cachedCurrentWeather.datetime,
-                cachedForecast.datetime
-            )
-        ) {
-            localDataSource.upsertCurrentWeather(
-                cachedForecast.toCurrentWeatherEntity(
-                    cachedCurrentWeather.sunrise,
-                    cachedCurrentWeather.sunset
+    override suspend fun updateCurrentWeatherOnOffline(cityId: Int): Resource<Unit> =
+        tryResourceSuspend {
+            val cachedCurrentWeather = localDataSource.getCurrentWeather(cityId)
+            val cachedForecast = localDataSource.getLastForecastSlot(cityId)
+            if (cachedCurrentWeather == null || cachedForecast == null) return@tryResourceSuspend
+            if (CacheUtils.shouldReplaceCurrentWeather(
+                    cachedCurrentWeather.datetime,
+                    cachedForecast.datetime
                 )
-            )
-            localDataSource.deleteForecastSlot(cachedForecast.id)
+            ) {
+                localDataSource.upsertCurrentWeather(
+                    cachedForecast.toCurrentWeatherEntity(
+                        cachedCurrentWeather.sunrise,
+                        cachedCurrentWeather.sunset
+                    )
+                )
+                localDataSource.deleteForecastSlot(cachedForecast.id)
+            }
         }
-    }
 
     override suspend fun updateAllCurrentWeatherOnOffline(): Resource<Unit> = tryResourceSuspend {
         val cities = localDataSource.getAllCities()
