@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,8 +21,10 @@ import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -60,19 +63,23 @@ private fun NavBackStackEntry?.matchesItem(item: NavBarItem): Boolean {
 fun MainBottomBar(
     controller: NavHostController,
 ) {
-    Box(
-        modifier = Modifier
-            .systemBarsPadding()
-            .fillMaxWidth()
-            .padding(bottom = 16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        BottomBarContent(controller, modifier = Modifier
-            .fillMaxWidth(0.8f)
-            .dropShadow(
-                CircleShape,
-                Shadow(3.dp, offset = DpOffset(0.dp, 3.dp), alpha = 0.1f)
-            ))
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+        Box(
+            modifier = Modifier
+                .systemBarsPadding()
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            BottomBarContent(
+                controller, modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .dropShadow(
+                        CircleShape,
+                        Shadow(3.dp, offset = DpOffset(0.dp, 3.dp), alpha = 0.1f)
+                    )
+            )
+        }
     }
 }
 

@@ -3,6 +3,7 @@ package com.msayeh.breeze.domain.model
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.msayeh.breeze.R
+import kotlin.math.roundToInt
 
 data class Wind(
     val speedMs: Double,
@@ -31,5 +32,9 @@ data class Wind(
 
     @Composable
     fun formatSpeed(unit: Unit, includeUnit: Boolean = true): String =
-        "%.0f %s".format(getWithUnit(unit), if (includeUnit) stringResource(unit.symbolResId) else "")
+        "%s%d %s".format(
+            if (getWithUnit(unit).roundToInt() == 0) "~" else "",
+            getWithUnit(unit).roundToInt(),
+            if (includeUnit) stringResource(unit.symbolResId) else ""
+        )
 }
