@@ -7,4 +7,10 @@ object CacheUtils {
 
     fun isStale(fetchedAt: Long, ttl: Long): Boolean =
         System.currentTimeMillis() - fetchedAt > ttl
+
+    fun shouldReplaceCurrentWeather(currentWeatherDateTime: Long?, forecastDateTime: Long?): Boolean {
+        val currentWeatherAge = currentWeatherDateTime?.let { System.currentTimeMillis() - it } ?: Long.MAX_VALUE
+        val forecastAge = forecastDateTime?.let { System.currentTimeMillis() - it } ?: Long.MAX_VALUE
+        return currentWeatherAge > forecastAge
+    }
 }

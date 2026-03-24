@@ -30,4 +30,22 @@ data class ForecastSlotEntity(
     val pressure: Int,
     val iconCode: String,
     val fetchedAt: Long,
-)
+) {
+    fun toCurrentWeatherEntity(sunrise: Long, sunset: Long): CurrentWeatherEntity = CurrentWeatherEntity(
+        cityId = cityId,
+        weatherName = weatherName,
+        datetime = datetime,
+        tempCelsius = tempCelsius,
+        feelsLikeCelsius = feelsLikeCelsius,
+        minTempCelsius = minTempCelsius,
+        maxTempCelsius = maxTempCelsius,
+        windSpeedMpS = windSpeedMpS,
+        windDeg = windDeg,
+        humidity = humidity,
+        pressure = pressure,
+        iconCode = iconCode,
+        sunrise = sunrise,
+        sunset = sunset,
+        fetchedAt = fetchedAt,
+    )
+}

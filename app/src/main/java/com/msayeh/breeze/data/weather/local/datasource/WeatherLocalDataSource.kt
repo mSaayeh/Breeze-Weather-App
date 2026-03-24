@@ -26,6 +26,7 @@ interface WeatherLocalDataSource {
     suspend fun getLastForecastSlot(cityId: Int): ForecastSlotEntity?
     fun observeForecastSlotsFrom(cityId: Int, fromTime: Long): Flow<List<ForecastSlotEntity>>
     suspend fun replaceForecast(cityId: Int, forecastDays: List<ForecastSlotEntity>)
+    suspend fun deleteForecastSlot(slotId: Long)
 
     fun observeCityWithWeather(cityId: Int): Flow<CityWithWeather?>
     fun observeAllCitiesWithWeather(): Flow<List<CityWithWeather>>

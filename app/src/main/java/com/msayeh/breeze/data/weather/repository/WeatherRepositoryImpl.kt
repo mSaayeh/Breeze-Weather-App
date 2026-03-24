@@ -215,4 +215,26 @@ class WeatherRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun updateAllCurrentWeatherOnOffline(): Resource<Unit> = tryResourceSuspend {
+        val cities = localDataSource.getAllCities()
+        cities.forEach { city ->
+            val cachedCurrentWeather = localDataSource.getCurrentWeather(city.id)
+            val cachedForecast = localDataSource.getLastForecastSlot(city.id)
+            if (cachedCurrentWeather == null || cachedForecast == null) return@forEach
+            if (CacheUtils.shouldReplaceCurrentWeather(
+                    cachedCurrentWeather.datetime,
+                    cachedForecast.datetime
+                )
+            ) {
+                localDataSource.upsertCurrentWeather(
+                    cachedForecast.toCurrentWeatherEntity(
+                        cachedCurrentWeather.sunrise,
+                        cachedCurrentWeather.sunset
+                    )
+                )
+                localDataSource.deleteForecastSlot(cachedForecast.id)
+            }
+        }
+    }
 }

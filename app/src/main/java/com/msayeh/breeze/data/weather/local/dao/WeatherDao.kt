@@ -28,6 +28,9 @@ interface WeatherDao {
     @Query("SELECT * FROM forecast_slots WHERE cityId = :cityId ORDER BY datetime ASC LIMIT 1")
     suspend fun getLastForecastSlot(cityId: Int): ForecastSlotEntity?
 
+    @Query("DELETE FROM forecast_slots WHERE id = :slotId")
+    suspend fun deleteForecastSlot(slotId: Long)
+
     @Query("SELECT * FROM forecast_slots WHERE cityId = :cityId AND datetime >= :fromTime ORDER BY datetime ASC")
     fun observeForecastSlotsFrom(cityId: Int, fromTime: Long): Flow<List<ForecastSlotEntity>>
 

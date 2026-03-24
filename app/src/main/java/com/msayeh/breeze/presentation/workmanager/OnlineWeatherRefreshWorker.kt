@@ -1,4 +1,4 @@
-package com.msayeh.breeze.presentation.refreshworkmanager
+package com.msayeh.breeze.presentation.workmanager
 
 import android.content.Context
 import androidx.hilt.work.HiltWorker
@@ -10,7 +10,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 
 @HiltWorker
-class WeatherRefreshWorker @AssistedInject constructor(
+class OnlineWeatherRefreshWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val weatherRepository: WeatherRepository,

@@ -72,6 +72,8 @@ class WeatherLocalDataSourceImpl @Inject constructor(
         e.printStackTrace()
     }
 
+    override suspend fun deleteForecastSlot(slotId: Long) = weatherDao.deleteForecastSlot(slotId)
+
     override fun observeCityWithWeather(cityId: Int): Flow<CityWithWeather?> =
         cityWeatherDao.observeCityWithWeatherById(cityId)
 

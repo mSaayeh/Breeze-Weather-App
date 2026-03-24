@@ -3,7 +3,7 @@ package com.msayeh.breeze
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import com.msayeh.breeze.presentation.refreshworkmanager.WeatherRefreshScheduler
+import com.msayeh.breeze.presentation.workmanager.WeatherRefreshScheduler
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
