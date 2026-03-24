@@ -28,14 +28,15 @@ class WeatherNotificationWorker @AssistedInject constructor(
 ) : CoroutineWorker(appContext, workerParams) {
     override suspend fun doWork(): Result {
         val alertId = inputData.getInt(WeatherAlarmReceiver.EXTRA_ALERT_ID, -1)
-        Log.d("Alerts", "WeatherNotificationWorker started, alertId: $alertId")
         val alertResource =
             weatherRepository.getAlertById(alertId).takeIf { it is Resource.Success }
                 ?: return Result.failure()
         val alert = (alertResource as Resource.Success<Alert>).data
 
         return try {
-            weatherRepository.refreshCurrentWeather(alert.cityId)
+            if (weatherRepository.refreshCurrentWeather(alert.cityId) is Resource.Error) {
+                weatherRepository.updateCurrentWeatherOnOffline(alert.cityId)
+            }
             val weather = weatherRepository.observeCityWithWeather(alert.cityId).first()
                 ?: return Result.failure()
 

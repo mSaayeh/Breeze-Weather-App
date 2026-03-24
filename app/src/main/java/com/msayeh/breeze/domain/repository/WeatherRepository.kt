@@ -32,5 +32,6 @@ interface WeatherRepository {
     suspend fun getAlertById(alertId: Int): Resource<Alert>
     suspend fun rescheduleAlert(alertId: Int): Resource<Unit>
     suspend fun rescheduleAllAlerts(): Resource<Unit>
+    suspend fun updateCurrentWeatherOnOffline(cityId: Int): Resource<Unit>
     suspend fun updateAllCurrentWeatherOnOffline(): Resource<Unit>
 }

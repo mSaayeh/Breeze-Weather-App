@@ -31,7 +31,7 @@ class WorkManagerScheduler @Inject constructor(
         ).setInitialDelay(calculateDelay(alert.time), TimeUnit.MILLISECONDS)
             .setInputData(workDataOf(WeatherAlarmReceiver.EXTRA_ALERT_ID to alert.id))
             .setConstraints(
-                Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+                Constraints.Builder().setRequiredNetworkType(NetworkType.NOT_REQUIRED).build()
             ).build()
 
         workManager.enqueueUniquePeriodicWork(

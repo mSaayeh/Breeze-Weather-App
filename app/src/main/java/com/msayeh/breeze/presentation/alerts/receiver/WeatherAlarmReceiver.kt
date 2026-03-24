@@ -41,8 +41,7 @@ class WeatherAlarmReceiver : BroadcastReceiver() {
                 workDataOf(EXTRA_ALERT_ID to alertId)
             ).setConstraints(
                 Constraints.Builder()
-                    // TODO: Add the ability to show the notification even if offline
-                    .setRequiredNetworkType(NetworkType.CONNECTED).build()
+                    .setRequiredNetworkType(NetworkType.NOT_REQUIRED).build()
             ).build()
 
         workManager.enqueue(workRequest)
